@@ -23,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     pic: DataTypes.STRING,
     name: DataTypes.JSONB,
-    title: DataTypes.JSONB,
     date: DataTypes.JSONB,
     body: DataTypes.JSONB,
     tags:DataTypes.ARRAY(DataTypes.STRING)

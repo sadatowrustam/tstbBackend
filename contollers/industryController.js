@@ -37,7 +37,7 @@ exports.editIndustry=async(req,res,next)=>{
         return res.status(500).send("something went wrong")
     } 
 }
-exports.deleteIndustry=async(req,res,next)=>{
+exports. deleteIndustry=async(req,res,next)=>{
     let id=req.query.id
     try{
         let industry=await Industry.destroy({where:{"id":id}})
@@ -66,7 +66,6 @@ exports.getOneSubcategory=async(req,res,next)=>{
     let index=req.query.index
     try{
         let sub=await Industry.findOne({attributes:["sub"]},{where:{"id":id}})
-
         return res.send(sub.sub[index])
     }catch(err){
         console.log(err)
@@ -81,14 +80,14 @@ exports.addSubcategory=async(req,res,next)=>{
     }
     let pic=req.files.pic
     let text={
-        TM:req.body.tmtext,
-        RU:req.body.rutext,
-        EN:req.body.entext
+        TM:req.body.text,
+        RU:req.body.text2,
+        EN:req.body.text3
     }
     let title={
-        TM:req.body.tmtitle,
-        RU:req.body.rutitle,
-        EN:req.body.entitle
+        TM:req.body.headerTM,
+        RU:req.body.headerRU,
+        EN:req.body.headerEN
     }
     let oldSub=[]
     let filename=Math.floor(Math.random()*100)+pic.name
@@ -101,7 +100,6 @@ exports.addSubcategory=async(req,res,next)=>{
                 oldSub.push(e)
             })
         }
-
         let obj={
             name:name,
             img:filename,
@@ -109,7 +107,6 @@ exports.addSubcategory=async(req,res,next)=>{
             title:title
         }
         oldSub.push(obj)
-
         subcategory=await Industry.update({sub:oldSub},{where:{"id":id}})
         await sharp("./public/mysal/"+filename).toFile("./public/industry/"+filename)
         return res.send(subcategory)

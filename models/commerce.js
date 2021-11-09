@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.CommerceCategory,{foreignKey:"commerceId",as:"category"});
     }
   };
   Commerce.init({
@@ -19,9 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     number: DataTypes.STRING,
     website: DataTypes.STRING,
     pic: DataTypes.ARRAY(DataTypes.STRING),
-    category:DataTypes.STRING
+    commerceId: DataTypes.INTEGER
   }, {
     sequelize,
+    tableName:"commerce",
     modelName: 'Commerce',
   });
   return Commerce;

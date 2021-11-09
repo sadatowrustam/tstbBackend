@@ -26,6 +26,9 @@ module.exports = {
       category:{
         type:DataTypes.STRING
       },
+      commerceId:{
+        type:DataTypes.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE

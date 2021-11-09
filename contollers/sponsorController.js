@@ -30,9 +30,9 @@ catch(err){
     }
 }
 exports.getOne=async(req,res,next)=>{
-    let uuid=req.query.uuid
+    let id=req.query.id
     try{
-        let sponser=await Sponsor.findOne({where:{"uuid":uuid}})
+        let sponser=await Sponsor.findOne({where:{"id":id}})
         return res.send(sponser)
     }catch(err){
         console.log(err)
@@ -40,13 +40,13 @@ exports.getOne=async(req,res,next)=>{
     }
 }
 exports.editSponsor=async(req,res,next)=>{
-    let uuid=req.query.uuid
+    let id=req.query.id
     let name=req.body.name
     let srok=req.body.srok
     let link=req.body.link
     let filename
     try{
-        let file=await Sponsor.findOne({where:{"uuid":uuid}})
+        let file=await Sponsor.findOne({where:{"id":id}})
         filename=file.brandlogo
     }catch (err) {
         console.log(err)
@@ -60,7 +60,7 @@ exports.editSponsor=async(req,res,next)=>{
         req.files.pic.mv("./public/mysal/"+filename,(err)=>{if(err){console.log(err)}})
     }
     try {
-        let sponsor=await Sponsor.update({brandlogo:filename,brandname:name,srok:srok,link:link},{where:{"uuid":uuid}})
+        let sponsor=await Sponsor.update({brandlogo:filename,brandname:name,srok:srok,link:link},{where:{"id":id}})
         if(req.files!=undefined){
             await sharp("./public/mysal/"+filename).resize(70,70).toFile("./public/sponsers/"+filename)
         }

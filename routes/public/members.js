@@ -1,8 +1,9 @@
 const express=require("express")
 const router=express.Router()
-const {mainMembers,addMember}=require("../../contollers/memberController")
-
+const {mainMembers,addMember,getOne,editMember,deleteMember}=require("../../contollers/memberController")
 router.get("/main",mainMembers)
-router.get("/main")
 router.post("/add",addMember)
+router.get("/getOne",getOne)
+router.post("/edit",editMember)
+router.delete("/",deleteMember)
 module.exports=router

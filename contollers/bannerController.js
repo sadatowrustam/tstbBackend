@@ -35,6 +35,7 @@ exports.addBanners=async(req,res,next)=>{
         pic:filename,
         link:web
     }
+
     let allBanners=[]
     picture.mv("./public/mysal/"+filename,function(err){if(err){console.log(err)}})
     try{
@@ -46,6 +47,7 @@ exports.addBanners=async(req,res,next)=>{
         }
         allBanners.push(banner)
         banners=await Banners.update({banner:allBanners},{where:{id:id}})
+        console.log(filename)
         await sharp("./public/mysal/"+filename).resize(1100,234).toFile("./public/banners/"+filename)
         return res.json(banners)
     }catch(err){
@@ -60,6 +62,7 @@ exports.editBanner=async(req,res,next)=>{
     let pics=[]
     let all=[]
     let filename
+    
     try{
         let banner=await Banners.findOne({
             where:{"id":id},
@@ -76,7 +79,7 @@ exports.editBanner=async(req,res,next)=>{
             fs.unlink("./public/banners/"+filename,(err)=>{if(err){console.log(err);}})
             filename=Math.floor(Math.random()*100)+req.files.image.name
             req.files.image.mv("./public/mysal/"+filename,function(err){if(err){console.log(err)}})
-            await sharp("./public/mysal/"+filename).resize(1100,234).toFile("./public/banners/"+filename)
+            await sharp("./public/mysal/"+file.name).resize(1100,234).toFile("./public/banners/"+filename)
             all[bannernumb].pic=filename
         }
         await Banners.update({banner:all},{where:{"id":id}})
