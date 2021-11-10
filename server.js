@@ -24,6 +24,7 @@ app.use("/events",require("./routes/public/events"))
 app.use("/industry",require("./routes/public/industry"))
 app.use("/login",require("./routes/public/login"))
 app.use("/commerce",require("./routes/public/commerce"))
+app.use("/constructor",require("./routes/public/constructor"))
 
 // const users = {}
 // let socket1

@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.JSONB
   }, {
     sequelize,
-    tableName: "constructorcategory",
+    tableName: "constructorcategories",
     modelName: 'Constructorcategory',
   });
   return Constructorcategory;
