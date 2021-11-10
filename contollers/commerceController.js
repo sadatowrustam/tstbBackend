@@ -34,6 +34,7 @@ exports.addCommerce=async(req,res,next)=>{
     let commerceId=req.body.commerceId
     let welayat=req.body.welayat
     let pic1=req.files.pic
+    console.log(pic1.name)
     let category=req.body.category
     let website=req.body.web
     let pic=[]
@@ -74,7 +75,7 @@ exports.getOne=async(req,res,next)=>{
     }
 }
 exports.editCommmerce=async(req,res,next)=>{
-
+    let commerceId=req.body.commerceId;
     let id=req.query.id
     let name={
         TM:req.body.tm,
@@ -119,7 +120,7 @@ exports.editCommmerce=async(req,res,next)=>{
     }
     console.log(pic)
     try {
-        let commerce=await Commerce.update({name:name,welayat:welayat,pic:pic,number:number,category:category,website:website},{where:{"id":id}})
+        let commerce=await Commerce.update({name:name,welayat:welayat,pic:pic,number:number,commerceId:commerceId,website:website},{where:{"id":id}})
         if (pic1!=undefined){
             if(pic1.length==undefined){
                 await sharp("./public/mysal/"+pic[pic.length-1]).toFile("./public/commerce/"+req.body.tm+"/"+pic[pic.length-1])
@@ -191,5 +192,15 @@ exports.getCategory =async(req,res,next)=>{
         console.log(err)
         return res.status(500).send("something went wrong")
         
+    }
+}
+exports.deleteCategory =async(req,res,next)=>{
+    let id=req.query.id
+    try {
+        await CommerceCategory.destroy({where:{id:id}})
+        return res.send("success")
+    } catch (err) {
+        console.log(err)
+        return res.send(500).send("something went wrong")
     }
 }

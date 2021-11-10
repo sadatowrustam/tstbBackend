@@ -19,10 +19,15 @@
     "randomstring": "^1.2.1",
     "rimraf": "^3.0.2",
     "sequelize": "^6.6.5",
-    "sharp": "^0.29.1"
+    "sharp": "^0.29.1",
+    "socket.io": "^4.3.2"
   },
   "devDependencies": {},
-  "nodemonConfig":{"ignore":["public"]},
+  "nodemonConfig": {
+    "ignore": [
+      "public"
+    ]
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js"

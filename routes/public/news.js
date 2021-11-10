@@ -6,7 +6,7 @@ const router=express.Router()
 router.get("/",getMain)
 router.get("/loadMore",loadMore)
 router.post("/addNews",addNews)
-router.get("/edit",getOneNews)
+router.get("/getOne",getOneNews)
 router.post("/edit",editNews)
 router.delete("/",deleteNews)
 //tags

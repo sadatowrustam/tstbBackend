@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class CommerceCategory extends Model {
+  class Constructor extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,17 +11,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.Commerce,{foreignKey:"commerceId",as:"commerce",onDelete:"cascade"})
+      this.belongsTo(models.Constructorcategory,{foreignKey:"constructorId",as:"category"});
     }
   };
-  CommerceCategory.init({
-    name: DataTypes.JSONB
-  },
-
-  {
+  Constructor.init({
+    name: DataTypes.JSONB,
+    body: DataTypes.JSONB,
+    page: DataTypes.STRING,
+    constructorId:DataTypes.INTEGER
+  }, {
     sequelize,
-    tableName:"commerce_category",
-    modelName: 'CommerceCategory',
+    tableName: "constructor",
+    modelName: 'Constructor',
   });
-  return CommerceCategory;
+  return Constructor;
 };

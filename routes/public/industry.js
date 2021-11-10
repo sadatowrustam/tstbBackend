@@ -4,7 +4,7 @@ const{addIndustry,addSubcategory,editSubcategory,getMain,getOneIndsutry,editIndu
 router.get("/",getMain)
 router.post("/",addIndustry)
 router.delete("/",deleteIndustry)
-router.get("/edit",getOneIndsutry)
+router.get("/getOne",getOneIndsutry)
 router.post("/edit",editIndustry)
 router.get("/subcategory",getOneSubcategory)
 router.post("/subcategory",addSubcategory)
