@@ -1,6 +1,4 @@
 const {Banners,News,Member,Province,Sponsor,Events,Industry}=require("../models")
-
-
 exports.getAll=async(req,res,next)=>{
   let obj={}
       try{
@@ -8,7 +6,7 @@ exports.getAll=async(req,res,next)=>{
           order:[
             ["id","DESC"]
           ],
-          attributes:["name","title","pic","date","id"],
+          attributes:["name","pic","date","id"],
           limit:4,
         })
         obj.list=news
@@ -53,8 +51,6 @@ exports.getAll=async(req,res,next)=>{
       } catch (err) {
         
       }
-
-
       try{
         let members=await Member.findAll({
             order:[

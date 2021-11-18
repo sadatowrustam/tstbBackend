@@ -12,16 +12,20 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.Constructorcategory,{foreignKey:"constructorId",as:"category"});
+      this.belongsTo(models.Banners,{foreignKey:"bannerId",as:"banner"})
     }
   };
   Constructor.init({
     name: DataTypes.JSONB,
+    header:DataTypes.JSONB,
     body: DataTypes.JSONB,
-    page: DataTypes.STRING,
-    constructorId:DataTypes.INTEGER
+    pic:DataTypes.ARRAY(DataTypes.STRING),
+    page:DataTypes.STRING,
+    constructorId:DataTypes.INTEGER,
+    bannerId:DataTypes.INTEGER
   }, {
     sequelize,
-    tableName: "constructor",
+    tableName: "constructors",
     modelName: 'Constructor',
   });
   return Constructor;

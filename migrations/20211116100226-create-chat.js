@@ -1,33 +1,18 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.createTable('constructors', {
+    await queryInterface.createTable('chats', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      name: {
+      chat: {
         type: DataTypes.JSONB
       },
-      header: {
-        type: DataTypes.JSONB
-      },
-      body: {
-        type: DataTypes.JSONB
-      },
-      page: {
+      user: {
         type: DataTypes.STRING
-      },
-      pic:{
-        type:DataTypes.ARRAY(DataTypes.STRING)
-      },
-      constructorId:{
-        type: DataTypes.INTEGER
-      },
-      bannerId:{
-        type:DataTypes.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -40,6 +25,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, DataTypes) => {
-    await queryInterface.dropTable('constructors');
+    await queryInterface.dropTable('chats');
   }
 };

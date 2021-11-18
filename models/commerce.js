@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   Commerce.init({
     welayat: DataTypes.STRING,
     name: DataTypes.JSONB,
+    header: DataTypes.JSONB,
     number: DataTypes.STRING,
     website: DataTypes.STRING,
     pic: DataTypes.ARRAY(DataTypes.STRING),
