@@ -12,9 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-    toJSON(){
-      return {...this.get(),id:undefined}
-    }
+    
   };
   Newspaper.init({
     uuid:{
@@ -23,14 +21,20 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type:DataTypes.JSONB,
-      allowNull:false},
+      },
     filename:{
       type:DataTypes.STRING,
-      allowNull:false},
+    },
     date: {
       type:DataTypes.STRING,
       allowNull:false},
-  }, 
+    logo:{
+      type:DataTypes.STRING,
+    },
+    active:{
+      type:DataTypes.STRING
+    }
+    }, 
   {
     sequelize,
     tableName:"newspapers",

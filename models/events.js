@@ -19,11 +19,13 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue:DataTypes.UUIDV4
     },
     pic: DataTypes.STRING,
-    name: DataTypes.JSONB,
-    title: DataTypes.JSONB,
-    date: DataTypes.JSONB,
+    header: DataTypes.JSONB,
+    date: DataTypes.STRING,
     body: DataTypes.JSONB,
-    tags:DataTypes.ARRAY(DataTypes.STRING)
+    tags:DataTypes.ARRAY(DataTypes.STRING),
+    topar: DataTypes.STRING,
+    active:DataTypes.STRING,
+    name: DataTypes.STRING
   }, {
     sequelize,
     tableName:"events",

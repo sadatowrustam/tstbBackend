@@ -8,7 +8,8 @@ app.use(fileupload())
 const cors=require("cors")
 app.use(cors({
     origin:"*",
-    contentType:["application/x-www-form-urlencoded","application/json"]
+    credentials:true,
+    
 }))
 
 app.use(express.static("./public"))
@@ -27,6 +28,7 @@ app.use("/commerce",require("./routes/public/commerce"))
 app.use("/constructor",require("./routes/public/constructor"))
 app.use("/mail",require("./routes/public/mail"))
 app.use("/chat",require("./routes/public/chat"))
+app.use("/menu",require("./routes/public/menu"))
 
 app.listen("5000",async function(){
     await sequelize.authenticate()

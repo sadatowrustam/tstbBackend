@@ -15,20 +15,29 @@ module.exports = {
       pic: {
         type: DataTypes.STRING
       },
-      name: {
+      header: {
         type: DataTypes.JSONB
       },
       title: {
         type: DataTypes.JSONB
       },
       date: {
-        type: DataTypes.JSONB
+        type: DataTypes.STRING
       },
       body: {
         type: DataTypes.JSONB
       },
       tags:{
         type:DataTypes.ARRAY(DataTypes.STRING)
+      },
+      topar:{
+        type:DataTypes.STRING
+      },
+      active: {
+        type:DataTypes.STRING
+      },
+      name:{
+        type:DataTypes.STRING
       },
       createdAt: {
         allowNull: false,

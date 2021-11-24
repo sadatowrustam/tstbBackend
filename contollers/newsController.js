@@ -21,7 +21,7 @@ exports.addTags=async(req,res,next)=>{
   const {tm,ru,en}=req.body
   try{
     const user = await News_tags.create({TM:tm,RU:ru,EN:en})
-    return res.send(user)
+    return res.status(200).send({"status":200})
   }catch(err){
     console.log(err)
     return res.status(400).send({"err":"something went wrong"})
@@ -54,7 +54,6 @@ exports.addNews=async (req,res,next)=>{
 exports.addPicture=async (req,res,next)=>{
   let filename1
   let id=req.query.id
-  console.log(57,id)
   let filename
   try {
     filename=await News.findOne({where:{id:id}})
@@ -66,6 +65,7 @@ exports.addPicture=async (req,res,next)=>{
     console.log(err)
     return res.status(400).send("something went wrong")
   }
+  console.log(filename,filename1)
   if(req.files!=undefined){
     let pic=req.files.pic0
     let format="."+pic.name.split(".")[1]
@@ -78,7 +78,7 @@ exports.addPicture=async (req,res,next)=>{
     if(filename1!=undefined){
       fs.unlink("./public/news/"+filename1,(err)=>{if(err){console.log(err)}})
     }
-    return res.send("success")
+    return res.status(200).send({status:"success"})
   }catch (err) {
     console.log(err)
     return res.status(400).send("something went wrong")
@@ -101,9 +101,10 @@ exports.editNews=async(req,res,next)=>{
   let status=req.body.active
   let name=req.body.name
   let topar=req.body.topar
+  let date=req.body.date
   try{
-    let news=await News.update({pic:filename,header:header,title:title,date:date,body:body,tags:tags,active:status,name:name,topar:topar},{where:{id:id}})
-    return res.send(news.id)
+    let news=await News.update({pic:filename,header:header,date:date,body:body,tags:tags,active:status,name:name,topar:topar},{where:{id:id}})
+    return res.send({newsId:news.id})
   }catch(err){
     console.log(err)
     return res.status(400).send("something went wrong")
@@ -181,8 +182,9 @@ exports.getOneNews=async (req,res,next)=>{
     let news=await News.findOne({
       where:{"id":id}
     })
-    return res.send(news)
-  } catch (error) {
+    let tags=await News_tags.findAll({order: [["id","DESC"]]})
+    return res.status(200).send([news,tags])
+  } catch (err) {
     console.log(err)
     return res.status(500).send("something went wrong")
   }
@@ -211,6 +213,18 @@ exports.getTags=async(req,res,next) => {
     console.log(err)
     return res.status(400).send("Something went wrong")
   }
+}
+exports.isActiveNews=async (req,res,next)=>{
+  let active=req.body.data
+  let id=req.body.id
+  try {
+    await News.update({active:active},{where:{"id":id}})
+    return res.status(200).send("sucesss")
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("Something went wrong")
+  }
+  
 }
 // exports.getOneTag=async(req,res,next)=>{
 //   let uuid=req.query.uuid

@@ -14,15 +14,20 @@ module.exports = {
       },
       name: {
         type: DataTypes.JSONB,
-        allowNull:false
       },
       filename: {
         type: DataTypes.STRING,
-        allowNull:false
+
       },
       date: {
         type: DataTypes.STRING,
-        allowNull:false
+
+      },
+      logo:{
+        type: DataTypes.STRING,
+      },
+      active:{
+        type:DataTypes.STRING
       },
       createdAt: {
         allowNull: false,

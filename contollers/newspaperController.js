@@ -1,92 +1,130 @@
 const {Newspaper}=require("../models")
 const fs=require("fs")
+const randomstring = require("randomstring")
+const sharp=require("sharp")
 exports.getAllNewspapers=async(req,res,next)=>{
     try{
         let newspaper=await Newspaper.findAll()
-        return res.json(newspaper)
+        return res.status(200).send(newspaper)
     }catch(err){
         console.log(err)
         return res.json({"err":"something went wrong"})
     }
 }
 exports.addNewspaper=async(req,res,next)=>{
-    let file=req.files.file
-    let filename=Math.floor(Math.random()*100)+file.name
     let name={
         tm:req.body.tm,
         ru:req.body.ru,
         en:req.body.en
     }
     let date=req.body.date
+    let active=req.body.active
     try{
-        const newspaper=await Newspaper.create({name,filename,date})
-        file.mv("./public/newspapers/"+filename,function(err){
-            if(err){
-                console.log(err)
-            }
-        })
-        return res.json(newspaper)
+        const newspaper=await Newspaper.create({name:name,date:date,active:active})
+        return res.json({id:newspaper.id})
     }catch(err){
         console.log(err)
-        return res.json({"err":err})
+        return res.status(400).json({"err":"something went wrong"})
     }
 }
 exports.getOneNewspaper=async(req,res,next)=>{
-    let uuid=req.query.uuid
+    let id=req.query.id
         try{
-            let paper=await Newspaper.findOne({where:{"uuid":uuid}})
-            return res.send(paper)
+            let paper=await Newspaper.findOne({where:{"id":id}})
+            return res.status(200).send(paper)
         }catch(err){
             console.log(err)
-            return res.status(500).send("something went wrong")
+            return res.status(400).send("something went wrong")
         }
 }
 exports.editNewspaper=async(req,res,next)=>{
-    let uuid=req.query.uuid
-    let filename
-        try{
-            let paper=await Newspaper.findOne({where:{"uuid":uuid}})
-            filename=paper.filename
-        }catch(err){
-            console.log(err)
-            return res.status(500).send("something went wrong")
-        }
-    
-    if(req.files!=undefined){
-        let file=req.files.file
-        fs.unlink("./public/newspapers/"+filename,(err)=>{
-            if(err){console.log(err)}
-        })
-        filename=Math.floor(Math.random()*100)+file.name
-        file.mv("./public/newspapers/"+filename,function(err){if(err){console.log(err);}})
-    }
+    let id=req.query.id
     let name={
         tm:req.body.tm,
         ru:req.body.ru,
         en:req.body.en
     }
     let date=req.body.date
+    let active=req.body.active
     try {
-        let newspaper=await Newspaper.update({name:name,date:date,filename:filename},{where:{"uuid":uuid}})
-        return res.send(newspaper)
+        await Newspaper.update({name:name,date:date,acitve:active},{where:{"id":id}})
+        return res.send({id:id})
     } catch (err) {
         console.log(err)
-        return res.status(500).send("something went wrong")
+        return res.status(400).send("something went wrong")
     }
 }
 exports.deleteNewspaper=async(req,res,next)=>{
-    let uuid=req.query.uuid
+    let id=req.query.id
     let filename
     try{
-        let file=await Newspaper.findOne({where:{"uuid":uuid}})
+        let file=await Newspaper.findOne({where:{"id":id}})
         filename=file.filename
-    }catch(err){}
+    }catch(err){
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
     try {
-        await Newspaper.destroy({where:{"uuid":uuid}})
+        await Newspaper.destroy({where:{"id":id}})
         fs.unlink("./public/newspapers/"+filename,(err)=>{if(err){console.log(err)}})
         return res.send("success")
     } catch (err) {
         console.log(err)
-        return res.status(500).send("something went wrong")
+        return res.status(400).send("something went wrong")
     }
 }
+exports.addPic=async(req,res,next)=>{
+    let id=req.query.id
+    let file=req.files.pic0
+    let filename=randomstring.generate(7)+"."+file.name.split('.')[1]
+    await file.mv("./public/mysal/"+filename,(err)=>{if(err){console.log(err)}})
+    // try {
+    //     console.log("./public/mysal/"+filename)
+    //     console.log(__dirname+"/../public/mysal/")
+    // } catch (err) {
+    //     console.log(err)
+    //     return res.status(400).send("some")
+    // }
+    try {
+        await Newspaper.update({logo:filename},{where:{id:id}})
+        await sharp("./public/mysal/"+filename).toFile("./public/newspapers/pic/"+filename);
+        return res.status(200).json(id)
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
+}
+exports.addFile = async(req,res,next) => {
+    let id=req.query.id
+    let oldFile
+    try {
+        oldFile=await Newspaper.findOne({where:{id:id}})
+        oldFile=oldFile.filename
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
+    let file=req.files.pic0
+    let filename=file.name
+    file.mv("./public/newspapers/files/"+filename,(err)=>{if(err){console.log(err)}})
+    try {
+        await Newspaper.update({filename:filename},{where:{id:id}})
+        if(oldFile!=undefined){fs.unlink("./public/newspapers/files/"+oldFile,(err)=>{if(err){console.log(err)}})}
+        return res.status(200).json(id)
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
+}   
+exports.isActiveNewspaper=async(req,res,next)=>{
+    let id=req.body.id
+    let active=req.body.data
+    try {
+        await Newspaper.update({active:active},{where:{id:id}})
+        return res.status(200).send("success")
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
+}
+

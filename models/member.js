@@ -14,19 +14,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Member.init({
-    uuid:{
-      type:DataTypes.UUID,
-      defaultValue:DataTypes.UUIDV4
-    },
-    name: DataTypes.STRING,
+    
+    name:DataTypes.STRING,
     link: DataTypes.STRING,
     pic: DataTypes.STRING,
+    body:DataTypes.JSONB,
     files:DataTypes.ARRAY(DataTypes.STRING),
     category:DataTypes.ARRAY(DataTypes.STRING),
     email:DataTypes.STRING,
     extra:DataTypes.STRING,
     welayat:DataTypes.STRING, 
-    main:DataTypes.STRING
+    main:DataTypes.STRING,
+    address:DataTypes.JSONB
   }, {
     sequelize,
     tableName:"members",

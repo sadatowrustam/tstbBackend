@@ -8,12 +8,8 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      uuid:{
-        type:DataTypes.UUID,
-        defaultValue:DataTypes.UUIDV4
-      },
       name: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
       link: {
         type: DataTypes.STRING
@@ -37,10 +33,13 @@ module.exports = {
         type:DataTypes.STRING
       },
       body:{
-        type:DataTypes.STRING
+        type:DataTypes.JSONB
       },
       main:{
         type:DataTypes.STRING
+      },
+      address:{
+        type:DataTypes.JSONB
       },
       createdAt: {
         allowNull: false,

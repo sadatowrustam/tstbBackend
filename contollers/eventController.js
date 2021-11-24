@@ -1,13 +1,23 @@
 const {Op}=require("sequelize")
 const sharp = require("sharp");
-const {Events,Banners}=require("../models/");
-
+const {Events,Banners,News_tags}=require("../models/");
+const fs = require("fs")
+const randomstring = require("randomstring")
+exports.getAll=async(req,res,next)=>{
+  try {
+    let event=await Events.findAll({order:[["id","DESC"]]})
+    return res.send(event)
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
+}
 exports.addEvent=async (req,res,next)=>{
-  console.log(req.body)
+
   let body={
-    TM:req.body.tm,
-    RU:req.body.ru, 
-    EN:req.body.en
+    TM:req.body.text,
+    RU:req.body.text2, 
+    EN:req.body.text3
   }
   let tags=req.body.tag
   let header={
@@ -15,72 +25,43 @@ exports.addEvent=async (req,res,next)=>{
     RU:req.body.ruheader,
     EN:req.body.enheader
   }
-  let date={
-    TM:req.body.tmdate,
-    RU:req.body.rudate,
-    EN:req.body.endate
-  }
-  let title={
-    TM:req.body.tmtitle,
-    RU:req.body.rutitle,
-    EN:req.body.entitle
-  }
-  let file=req.files.pic
-  let filename=Math.floor(Math.random()*100)+file.name
-  file.mv("./public/mysal/"+filename,function(err){if(err){console.log(err)}})
+  let date=req.body.date
+  let topar=req.body.topar
+  let active=req.body.active
+  let status=req.body.status
+  let name=req.body.name
   try{
-    let news=await Events.create({pic:filename,name:header,title:title,date:date,body:body,tags:tags})
-    await sharp("./public/mysal/"+filename).toFile("./public/events/"+filename)
-    return res.json(news)
+    let event=await Events.create({header:header,date:date,body:body,tags:tags,active:active,status:status,name:name,topar:topar})
+    return res.send({newsId:event.id})
   }catch(err){
-    return res.status(500).json({err:"something went wrong"})
+    console.log(err)
+    return res.status(400).send("something went wrong")
   }
 }
 exports.editEvent=async(req,res,next)=>{
   let body={
-    TM:req.body.tm,
-    RU:req.body.ru, 
-    EN:req.body.en
+    TM:req.body.text,
+    RU:req.body.text2, 
+    EN:req.body.text3
   }
   let tags=req.body.tag
   let header={
-    TM:req.body.tmheader,
-    RU:req.body.ruheader,
-    EN:req.body.enheader
+    TM:req.body.headerTM,
+    RU:req.body.headerRU,
+    EN:req.body.headerEN
   }
-  let date={
-    TM:req.body.tmdate,
-    RU:req.body.rudate,
-    EN:req.body.endate
-  }
-  let title={
-    TM:req.body.tmtitle,
-    RU:req.body.rutitle,
-    EN:req.body.entitle
-  }
-  let filename
-  let uuid=req.query.uuid
-  if(req.files==undefined){
-    const news = await Events.findOne({ where: { uuid: uuid } });
-    filename=news.pic
-  }else{
-    filename=req.files.pic.name
-    filename=Math.floor(Math.random()*100)+filename
-  }
+  let date=req.body.date
+  
+  let active=req.body.active
+  let status=req.body.status
+  let name=req.body.name
+  let id=req.query.id
   try{
-    let news=await Events.update({pic:filename,name:header,title:title,date:date,body:body,tags:tags},{where:{uuid:uuid}})
-    if(req.files!=undefined){
-      req.files.pic.mv("./public/mysal/"+filename,function(err){
-        if(err){
-          news=err
-        }
-      })
-      await sharp("./public/mysal/"+filename).toFile("./publi/mysal/"+filename)
-    }
-    return res.send("sucess")
+    let news=await Events.update({header:header,date:date,body:body,tags:tags,active:active,status:status,name:name},{where:{id:id}})
+    return res.status(200).send({newsId:id})
   }catch(err){
     console.log(err)
-    return res.status(500).send("something went wrong")
+    return res.status(400).send("something went wrong")
   }
 } 
 exports.eventsByTag=async(req,res,next)=>{
@@ -126,27 +107,28 @@ exports.getMain=async(req,res,next)=>{
 }
 
 exports.deleteEvent=async(req,res,next)=>{
-  let uuid=req.query.uuid
+  let id=req.query.id
   try{
     let news=await Events.destroy({
-      where:{"uuid":uuid}
+      where:{"id":id}
     })
-    return res.send(news.toString())
+    return res.status(200).send(news.toString())
   }catch(err){
     console.log(err)
-    return res.status(500).send("something went wrong")
+    return res.status(400).send("something went wrong")
   }
 }
 exports.getOneEvent=async (req,res,next)=>{
-  let uuid=req.query.uuid
+  let id=req.query.id
   try {
     let event=await Events.findOne({
-      where:{"uuid":uuid}
+      where:{"id":id}
     })
-    return res.send(event)
-  } catch (error) {
+    let tags=await News_tags.findAll({order: [["id","DESC"]]})
+    return res.send([event,tags])
+  } catch (err) {
     console.log(err)
-    return res.status(500).send("something went wrong")
+    return res.status(400).send("something went wrong")
   }
 }
 exports.loadMore=async (req,res,next)=>{
@@ -165,4 +147,53 @@ exports.loadMore=async (req,res,next)=>{
   }
   return res.send(events.slice(startIndex,endIndex))
 }
+exports.addPicture=async(req,res,next)=>{
+  let filename1
+  let id=req.query.id
+  let filename
+  try {
+    filename=await Events.findOne({where:{id:id}})
+    if(filename.pic!=null){
+      filename1=filename.pic
+    }
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }console.log(req.files)
+    let pic=req.files.pic0
+    let format="."+pic.name.split(".")[1]
+    filename=randomstring.generate(7)+format
+    await pic.mv("./public/mysal/"+filename,(err)=>{if(err){console.log(err)}})
+  try {
+    await Events.update({pic:filename},{where:{"id":id}})
 
+    await sharp("./public/mysal/"+filename).toFile("./public/events/"+filename)
+    if(filename1!=undefined){
+      fs.unlink("./public/news/"+filename1,(err)=>{if(err){console.log(err)}})
+    }
+    return res.status(200).send({status:"success"})
+  }catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
+}
+exports.getTags=async(req,res,next) => {
+  try {
+    let tags=await News_tags.findAll({order:[["id","DESC"]]})
+    return res.send(tags)
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("Something went wrong")
+  }
+}
+exports.isActiveEvent=async(req,res,next)=>{
+  let active=req.body.data
+  let id=req.body.id
+  try {
+    await Events.update({active:active},{where:{"id":id}})
+    return res.status(200).send("sucesss")
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("Something went wrong")
+  }
+}
