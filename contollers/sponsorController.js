@@ -1,30 +1,34 @@
 const {Sponsor}=require("../models")
 const sharp=require("sharp")
 const fs=require("fs")
+const randomstring = require("randomstring")
 exports.getSponsers=async(req,res,next)=>{
     try{
-        let sponsor=await Sponsor.findAll({
-            where:{"srok":"true"}
-        })
+        let sponsor=await Sponsor.findAll({})
         return res.send(sponsor) 
     }catch(err){
         console.log(err)
         return res.status(500).send("something went wrong")
     }
 }
-exports.addSponser=async(req,res,next)=>{
-    let name=req.body.name
-    let srok=true
-    let link=req.body.link
-    let pic=req.files.pic
-    let filename=Math.floor(Math.random()*100)+pic.name
-    pic.mv("./public/mysal/"+filename,(err)=>{if(err){console.log(err);}})
-    try{
-        let sponser=await Sponsor.create({brandname:name,brandlogo:filename,srok:srok,link:link})
-        await sharp("./public/mysal/"+filename).resize(70,70).toFile("./public/sponsers/"+filename)
-        return res.send(sponser)
+exports.getAll=async(req,res,next) =>{
+    try {
+        let sponsor=await Sponsor.findAll({order:[["id","DESC"]]})
+        return res.status(200).send(sponsor)
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send(err)
     }
-catch(err){
+}
+exports.addSponsor=async(req,res,next)=>{
+    let name=req.body.name
+    let link=req.body.link
+    let active=req.body.active //dba gosh
+    try{
+        let sponsor=await Sponsor.create({name:name,active:active,link:link})
+        return res.send({id:sponsor.id})
+    }
+    catch(err){
         console.log(err)
         return res.status(500).send("something went wrong")
     }
@@ -44,39 +48,61 @@ exports.editSponsor=async(req,res,next)=>{
     let name=req.body.name
     let srok=req.body.srok
     let link=req.body.link
-    let filename
-    try{
-        let file=await Sponsor.findOne({where:{"id":id}})
-        filename=file.brandlogo
-    }catch (err) {
-        console.log(err)
-        return res.status(500).send("something went wrong")
-    } 
-    if(req.files!=undefined){   
-        fs.unlink("./public/sponsers/"+filename,(err)=>{
-            if(err){console.log(err)}
-        })    
-        filename=Math.floor(Math.random()*100)+req.files.pic.name
-        req.files.pic.mv("./public/mysal/"+filename,(err)=>{if(err){console.log(err)}})
-    }
+    let active=req.body.active
     try {
-        let sponsor=await Sponsor.update({brandlogo:filename,brandname:name,srok:srok,link:link},{where:{"id":id}})
-        if(req.files!=undefined){
-            await sharp("./public/mysal/"+filename).resize(70,70).toFile("./public/sponsers/"+filename)
-        }
-        return res.send(sponsor)
+        await Sponsor.update({name:name,srok:srok,link:link,active:active},{where:{"id":id}})
+        return res.send({status:200})
     } catch (err) {
         console.log(err)
-        return res.status(500).send("somthing went wrong")
+        return res.status(400).send("somthing went wrong")
     }
 }
 exports.deleteSponsor=async(req,res,next)=>{
-    let uuid=req.query.uuid
+    let id=req.query.id
     try{
-        await Sponsor.destroy({where:{"uuid":uuid}})
-        return res.send("success")
+        await Sponsor.destroy({where:{"id":id}})
+        return res.send({status:200})
     }catch(err){
         console.log(err)
         return res.status(500).send("something went wrong")
     }
 }
+exports.addPic=async(req,res,next)=>{
+    let id=req.query.id
+    let filename
+    try {
+        file=await Sponsor.findOne({where:{id:id}})
+        if(file.pic!=null){
+            filename=file.pic
+        }
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("Suratda problema yuze cykdy")
+    }
+    let pic=req.files.pic0
+    let a=await sharp(pic.data).webp({quality:90}).resize(1024,728).toBuffer()
+    console.log(filename)
+    if(filename!=undefined){
+        fs.unlink("./public/sponsor/"+filename,(err) => {if(err){console.log(err)}})
+    }
+    filename=randomstring.generate(7)+".webp"
+    await sharp(a).toFile("./public/sponsor/"+filename)
+    try {
+        await Sponsor.update({pic:filename},{where:{"id":id}})
+        return res.status(200).send({status:200})
+    } catch (err) {
+        
+    }    
+}
+exports.isActive=async(req,res,next)=>{
+    let id=req.query.id
+    let active=req.body.active
+    try {
+        await Sponsor.update({active:active},{where:{id:id}})
+        return res.status(200).send({status:200})
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send({message:"something went wrong"})
+    }
+}
+

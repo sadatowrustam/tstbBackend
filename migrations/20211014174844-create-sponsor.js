@@ -9,20 +9,16 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      uuid:{
-        type:DataTypes.UUID,
-        defaultValue:DataTypes.UUIDV4
-      },
-      brandlogo: {
+      pic: {
         type: DataTypes.STRING
       },
-      brandname: {
+      name: {
         type: DataTypes.STRING
       },
       link: {
         type: DataTypes.STRING
       },
-      srok:{
+      active:{
         type:DataTypes.STRING
       },
       createdAt: {

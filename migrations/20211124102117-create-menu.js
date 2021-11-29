@@ -11,6 +11,12 @@ module.exports = {
       body: {
         type: DataTypes.JSONB
       },
+      header:{
+        type: DataTypes.JSONB
+      },
+      pic:{
+        type:DataTypes.ARRAY(DataTypes.STRING)
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE

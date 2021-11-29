@@ -14,7 +14,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Menu.init({
-    body: DataTypes.JSONB
+    body: DataTypes.JSONB,
+    header: DataTypes.JSONB,
+    pic:DataTypes.ARRAY(DataTypes.STRING)
   }, {
     sequelize,
     tableName:"menu",

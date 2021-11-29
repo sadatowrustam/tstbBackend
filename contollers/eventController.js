@@ -105,7 +105,6 @@ exports.getMain=async(req,res,next)=>{
   }catch(err){}
   return res.send(obj)
 }
-
 exports.deleteEvent=async(req,res,next)=>{
   let id=req.query.id
   try{
@@ -151,8 +150,10 @@ exports.addPicture=async(req,res,next)=>{
   let filename1
   let id=req.query.id
   let filename
+  console.log(id)
   try {
     filename=await Events.findOne({where:{id:id}})
+    console.log(filename)
     if(filename.pic!=null){
       filename1=filename.pic
     }

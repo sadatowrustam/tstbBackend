@@ -1,6 +1,7 @@
 const{Industry}=require("../models")
 const sharp=require("sharp")
 const fs=require("fs")
+const randomstring = require("randomstring")
 exports.getMain=async(req,res,next)=>{
     try{
         let industry=await Industry.findAll({
@@ -78,7 +79,6 @@ exports.addSubcategory=async(req,res,next)=>{
         RU:req.body.ru,
         EN:req.body.en
     }
-    let pic=req.files.pic
     let text={
         TM:req.body.text,
         RU:req.body.text2,
@@ -89,10 +89,8 @@ exports.addSubcategory=async(req,res,next)=>{
         RU:req.body.headerRU,
         EN:req.body.headerEN
     }
-    let oldSub=[]
-    let filename=Math.floor(Math.random()*100)+pic.name
     let id=req.query.id
-    pic.mv("./public/mysal/"+filename,function(err){if(err){console.log(err)}})
+    let oldSub=[]
     try {
         let subcategory=await Industry.findOne({where:{"id":id}})
         if (subcategory.sub!=null) {
@@ -102,20 +100,33 @@ exports.addSubcategory=async(req,res,next)=>{
         }
         let obj={
             name:name,
-            img:filename,
+            img:"",
             text:text,
             title:title
         }
+        let index=oldSub.length
         oldSub.push(obj)
         subcategory=await Industry.update({sub:oldSub},{where:{"id":id}})
-        await sharp("./public/mysal/"+filename).toFile("./public/industry/"+filename)
-        return res.send(subcategory)
+
+        return res.send({id:Number(id),index:index})
     } catch (err) {
         console.log(err)
         return res.status(500).send("something went wrong")
     }
 }
 exports.editSubcategory=async(req,res,next)=>{
+    let id=req.query.id
+    let index=req.query.index
+
+    let sub
+    let files
+    try {
+        sub=await Industry.findOne({where:{"id":id}})
+        console.log(sub.sub)
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send({message:"something went wrong"})
+    }
     let name={
         TM:req.body.tm,
         RU:req.body.ru,
@@ -131,39 +142,19 @@ exports.editSubcategory=async(req,res,next)=>{
         RU:req.body.rutitle,
         EN:req.body.entitle
     }
-    let filename
-    let id=req.query.id
-    let index=req.query.index
-    if(req.files!=undefined){
-        let pic=req.files.pic
-        filename=Math.floor(Math.random()*100)+pic.name
-        pic.mv("./public/mysal/"+filename,function(err){if(err){console.log(err)}})
-    }
     let obj={
         name:name,
-        img:filename,
+        img:files,//suratlar db den cekilen
         text:text,
         title:title
     }
-    let newSub=[]
     try {
-        let sub=await Industry.findOne({where:{"id":id}})
-        if(sub.sub!=null){
-            sub.sub.forEach(e=>{
-                newSub.push(e)
-            })
-        }
-        if(req.files!=undefined){
-            let filename1=sub.sub[index].img
-            fs.unlink("./public/industry/"+filename1)
-            await sharp("./public/mysal/"+filename).toFile("./public/industry/"+filename)}
-        else{obj.img=sub.sub[index].img}
-        newSub.splice(index,1,obj)
-        await Industry.update({sub:newSub},{where:{"id":id}})
-        return res.send("sucess")
+        sub.sub.splice(index,1,obj)
+        await Industry.update({sub:sub.sub},{where:{"id":id}})
+        return res.status(200).send({id:id})
     } catch (err) {
         console.log(err)
-        return res.status(500).send("something went wrong")
+        return res.status(400).send("something went wrong")
     }
 }
 exports.deleteSubcategory=async(req,res,next)=>{
@@ -184,6 +175,37 @@ exports.deleteSubcategory=async(req,res,next)=>{
     } catch (err) {
         console.log(err)
         return res.status(500).send("something went wrong")
+    }
+
+}
+exports.addPic=async(req,res,next)=>{
+    let id=req.query.id
+    let index=req.query.index
+    let files
+    try {
+        files=await Industry.findOne({where:{id:id}})
+        if(files.sub!=null){
+            files=files.sub
+        }
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
+
+    try {
+        let file=req.files.pic0
+        let filename=randomstring.generate(7)+".webp"
+        let buffer=await sharp(file.data).webp({quality:90}).toBuffer()
+        await sharp(buffer).toFile("./public/industry/"+filename)
+        if(files[index].img!=null){
+            fs.unlink("./public/industry/"+files[index].pic,(err) => {if(err){console.log(err)}})
+        }
+        files[index].pic=filename
+        await Industry.update({sub:files},{where:{"id":id}})  
+        return res.status(200).send({status:200})
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send({message:"Yalnyshlyk cykdy gaytadan yuklap gorun"})
     }
 
 }

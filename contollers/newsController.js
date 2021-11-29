@@ -2,7 +2,7 @@ const {Op}=require("sequelize")
 const sharp = require("sharp");
 const fs=require("fs");
 const randomstring=require("randomstring");
-const {News,News_tags,Banners}=require("../models/")
+const {News,News_tags,Banners}=require("../models/");
 exports.getAll =async (req, res, next) => {
   try{
     let news=await News.findAll({
@@ -17,7 +17,6 @@ exports.getAll =async (req, res, next) => {
   }
 };
 exports.addTags=async(req,res,next)=>{
-  console.log(req.body)
   const {tm,ru,en}=req.body
   try{
     const user = await News_tags.create({TM:tm,RU:ru,EN:en})
@@ -52,29 +51,30 @@ exports.addNews=async (req,res,next)=>{
   }
 }
 exports.addPicture=async (req,res,next)=>{
+  console.log("addPicture called")
   let filename1
-  let id=req.query.id
+  let id=Number(req.query.id)
   let filename
+  console.log("ishleyan ejen ",typeof(id),id)
   try {
-    filename=await News.findOne({where:{id:id}})
+    filename=await News.findOne({where:{"id":id}})
     if(filename.pic!=null){
       filename1=filename.pic
       filename=filename.pic
     }
   } catch (err) {
-    console.log(err)
+    console.log(66,err)
     return res.status(400).send("something went wrong")
   }
-  console.log(filename,filename1)
   if(req.files!=undefined){
     let pic=req.files.pic0
     let format="."+pic.name.split(".")[1]
     filename=randomstring.generate(7)+format
-    pic.mv("./public/mysal/"+filename,(err)=>{if(err){console.log(err)}})
+    pic.mv("./public/news/"+filename,(err)=>{if(err){console.log(err)}})
   }
   try {
     await News.update({pic:filename},{where:{"id":id}})
-    await sharp("./public/mysal/"+filename).toFile("./public/news/"+filename)
+    // await sharp("./public/mysal/"+filename).toFile("./public/news/"+filename)
     if(filename1!=undefined){
       fs.unlink("./public/news/"+filename1,(err)=>{if(err){console.log(err)}})
     }
@@ -98,13 +98,14 @@ exports.editNews=async(req,res,next)=>{
   }
   let filename
   let id=req.query.id
+  console.log(99,id)
   let status=req.body.active
   let name=req.body.name
   let topar=req.body.topar
   let date=req.body.date
   try{
-    let news=await News.update({pic:filename,header:header,date:date,body:body,tags:tags,active:status,name:name,topar:topar},{where:{id:id}})
-    return res.send({newsId:news.id})
+    await News.update({pic:filename,header:header,date:date,body:body,tags:tags,active:status,name:name,topar:topar},{where:{id:id}})
+    return res.status(200).send({newsId:id})
   }catch(err){
     console.log(err)
     return res.status(400).send("something went wrong")

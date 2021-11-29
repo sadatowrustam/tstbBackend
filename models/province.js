@@ -14,16 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Province.init({
-    uuid:{
-      type:DataTypes.STRING,
-      defaultValue:DataTypes.UUIDV4
-    },
-    place: DataTypes.JSONB,
-    adress: DataTypes.JSONB,
-    phone: DataTypes.ARRAY(DataTypes.STRING),
-    faks: DataTypes.ARRAY(DataTypes.STRING),
-    email: DataTypes.STRING,
-
+    place:DataTypes.JSONB
   }, {
     sequelize,
     tableName:"provinces",

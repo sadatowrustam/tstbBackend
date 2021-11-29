@@ -2,40 +2,7 @@ const {Province}=require("../models")
 
 exports.addSettings=async(req,res,next)=>{
     try{
-        await Province.create({
-            place:{
-                TM:"Ahal we Aşgabat",
-                RU:"Ахал и Ашхабад",
-                EN:"Akhal and Ashgabat"
-            }
-    })
-    await Province.create({
-        place:{
-            TM:"Mary",
-            RU:"Мары",
-            EN:"Mary"
-        }
-    })
-    await Province.create({
-        place:{
-            TM:"Lebap",
-            RU:"Лебап",
-            EN:"Lebap"
-        }
-    })
-    await Province.create({
-        place:{
-            TM:"Daşoguz",
-            RU:"Дашогуз",
-            EN:"Dashoguz"
-        }
-    })
-    await Province.create(
-        {place:{
-        TM:"Balkan",
-        RU:"Балкан",
-        EN:"Balkan"}
-    })
+        await Province.create()
     return res.send("sucess")
     }catch(err){
         console.log(err)
@@ -43,44 +10,81 @@ exports.addSettings=async(req,res,next)=>{
     }
 }
 exports.getProvince=async(req,res,next)=>{
-    let id=req.query.id
-    try{
-       let province=await Province.findOne({
-           where:{"id":id}
-       })
-       return res.send(province)
-    }catch(err){
-        console.log(err)
-        return res.status(500).send("something went wrong")
+    try {
+        let province=await Province.findOne({where:{id:1}})
+        return res.send(province.place)
+    } catch (err) {
+        
     }
 }
 exports.editProvince=async(req,res,next)=>{
-    let id=req.query.id
-    let adress={
-        TM:req.body.adressTM,
-        RU:req.body.adressRU,
-        EN:req.body.adressEN
+    let place={}
+    let little={}
+    little={
+        tmAddress:req.body.ashgabat.tmAddress,
+        ruAddress:req.body.ashgabat.ruAddress,
+        enAddress:req.body.ashgabat.enAddress,
+        faks:req.body.ashgabat.faks,
+        email:req.body.ashgabat.email,
+        phone:req.body.ashgabat.phone
     }
-    let phone1=req.body.phone
-    let phone=[]
-    if(typeof(phone1)=="string"){
-        phone.push(phone1)
-    }else{phone=phone1}
-    let faks1=req.body.faks
-    let faks=[]
-
-    if(typeof(faks1)=="string"){
-        faks.push(faks1)    
-    }else{faks=faks1}
-    let email=req.body.email
-    console.log(adress,phone,faks,email)
+    place.ashgabat=little
+    little={
+        tmAddress:req.body.ahal.tmAddress,
+        ruAddress:req.body.ahal.ruAddress,
+        enAddress:req.body.ahal.enAddress,
+        faks:req.body.ahal.faks,
+        email:req.body.ahal.email,
+        phone:req.body.ahal.phone
+    }
+    little={
+        tmAddress:req.body.mary.tmAddress,
+        ruAddress:req.body.mary.ruAddress,
+        enAddress:req.body.mary.enAddress,
+        faks:req.body.mary.faks,
+        email:req.body.mary.email,
+        phone:req.body.mary.phone
+    }
+    place.mary=little
+    little={
+        tmAddress:req.body.balkan.tmAddress,
+        ruAddress:req.body.balkan.ruAddress,
+        enAddress:req.body.balkan.enAddress,
+        faks:req.body.balkan.faks,
+        email:req.body.balkan.email,
+        phone:req.body.balkan.phone
+    }
+    place.balkan=little
+    little={
+        tmAddress:req.body.dashoguz.tmAddress,
+        ruAddress:req.body.dashoguz.ruAddress,
+        enAddress:req.body.dashoguz.enAddress,
+        faks:req.body.dashoguz.faks,
+        email:req.body.dashoguz.email,
+        phone:req.body.dashoguz.phone
+    }
+    place.dashoguz=little
+    little={
+        tmAddress:req.body.lebap.tmAddress,
+        ruAddress:req.body.lebap.ruAddress,
+        enAddress:req.body.lebap.enAddress,
+        faks:req.body.lebap.faks,
+        email:req.body.lebap.email,
+        phone:req.body.lebap.phone
+    }
+    place.lebap=little
+    little={
+        tmAddress:req.body.ahal.tmAddress,
+        ruAddress:req.body.ahal.ruAddress,
+        enAddress:req.body.ahal.enAddress,
+        faks:req.body.ahal.faks,
+        email:req.body.ahal.email,
+        phone:req.body.ahal.phone
+    }
+    place.ahal=little
     try{
-        let province=await Province.update({
-            adress:adress,phone:phone,faks:faks,email:email,
-        },
-        {where:{id:id}}
-        )
-        return res.send(province)
+        let province=await Province.update({place},{where:{id:1}})
+        return res.send({status:200})
     }catch(err){
         console.log(err)
         return res.status(500).send("something went wrong")

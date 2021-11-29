@@ -15,10 +15,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Industry.init({
-    uuid:{
-      type:DataTypes.UUID,
-      defaultValue:DataTypes.UUIDV4
-    },
     name: DataTypes.JSONB,
     sub: DataTypes.JSONB
   }, {
