@@ -2,10 +2,10 @@ const{Industry}=require("../models")
 const sharp=require("sharp")
 const fs=require("fs")
 const randomstring = require("randomstring")
-exports.getMain=async(req,res,next)=>{
+exports.getAll=async(req,res,next)=>{
     try{
         let industry=await Industry.findAll({
-            attributes:["id","name","sub"]
+            attributes:["id","name"]
         })
         return res.send(industry)
     }catch(err){
@@ -16,7 +16,7 @@ exports.getMain=async(req,res,next)=>{
 exports.getOneIndsutry=async(req,res,next)=>{
     let id=req.query.id
     try{
-        let industry=await Industry.findOne({where:{"id":id}})
+        let industry=await Industry.findOne({where:{"id":id},attributes:["name","sub","id"]})
         return res.send(industry)
     }catch(err){
         console.log(err)
@@ -25,14 +25,14 @@ exports.getOneIndsutry=async(req,res,next)=>{
 }
 exports.editIndustry=async(req,res,next)=>{
     let name={
-        TM:req.body.tm,
-        RU:req.body.ru,
-        EN:req.body.en
+        tm:req.body.tm,
+        ru:req.body.ru,
+        en:req.body.en
     }
     let id=req.query.id
     try {
-        let industry=await Industry.update({name:name},{where:{"id":id}})
-        return res.send(industry)
+        await Industry.update({name:name},{where:{"id":id}})
+        return res.status(200).send({status:200})
     } catch (error) {
         console.log(error)
         return res.status(500).send("something went wrong")
@@ -41,8 +41,8 @@ exports.editIndustry=async(req,res,next)=>{
 exports. deleteIndustry=async(req,res,next)=>{
     let id=req.query.id
     try{
-        let industry=await Industry.destroy({where:{"id":id}})
-        return res.send(industry)
+        await Industry.destroy({where:{"id":id}})
+        return res.send({status:200})
     }catch(err){
         console.log(err)
         return res.status(500).send("error")
@@ -50,13 +50,13 @@ exports. deleteIndustry=async(req,res,next)=>{
 }
 exports.addIndustry=async(req,res,next)=>{
     let name={
-        TM:req.body.tm,
-        RU:req.body.ru,
-        EN:req.body.en
+        tm:req.body.tm,
+        ru:req.body.ru,
+        en:req.body.en
     }
     try {
-        let industry=await Industry.create({name:name})
-        return res.send(industry)
+        await Industry.create({name:name})
+        return res.status(200).send({status:200})
     } catch (error) {
         console.log(error)
         return res.status(500).send("something went wrong")
@@ -70,24 +70,24 @@ exports.getOneSubcategory=async(req,res,next)=>{
         return res.send(sub.sub[index])
     }catch(err){
         console.log(err)
-        return res.status(500).send("something went wrong")
+        return res.status(400).send("something went wrong")
     }
 }
 exports.addSubcategory=async(req,res,next)=>{
     let name={
-        TM:req.body.tm,
-        RU:req.body.ru,
-        EN:req.body.en
+        tm:req.body.tm,
+        ru:req.body.ru,
+        en:req.body.en
     }
     let text={
-        TM:req.body.text,
-        RU:req.body.text2,
-        EN:req.body.text3
+        tm:req.body.text,
+        ru:req.body.text2,
+        en:req.body.text3
     }
     let title={
-        TM:req.body.headerTM,
-        RU:req.body.headerRU,
-        EN:req.body.headerEN
+        tm:req.body.tmheader,
+        ru:req.body.ruheader,
+        en:req.body.enheader
     }
     let id=req.query.id
     let oldSub=[]
@@ -100,15 +100,14 @@ exports.addSubcategory=async(req,res,next)=>{
         }
         let obj={
             name:name,
-            img:"",
             text:text,
             title:title
         }
-        let index=oldSub.length
         oldSub.push(obj)
+        let index=oldSub.length
         subcategory=await Industry.update({sub:oldSub},{where:{"id":id}})
 
-        return res.send({id:Number(id),index:index})
+        return res.send({id:Number(id),index:index-1})
     } catch (err) {
         console.log(err)
         return res.status(500).send("something went wrong")
@@ -117,41 +116,42 @@ exports.addSubcategory=async(req,res,next)=>{
 exports.editSubcategory=async(req,res,next)=>{
     let id=req.query.id
     let index=req.query.index
-
     let sub
-    let files
+    let files=null
     try {
         sub=await Industry.findOne({where:{"id":id}})
-        console.log(sub.sub)
+        files=sub.sub[index].pic
     } catch (err) {
         console.log(err)
         return res.status(400).send({message:"something went wrong"})
     }
+
     let name={
-        TM:req.body.tm,
-        RU:req.body.ru,
-        EN:req.body.en
+        tm:req.body.tm,
+        ru:req.body.ru,
+        en:req.body.en
     }
     let text={
-        TM:req.body.tmtext,
-        RU:req.body.rutext,
-        EN:req.body.entext
+        tm:req.body.text,
+        ru:req.body.text2,
+        en:req.body.text3
     }
     let title={
-        TM:req.body.tmtitle,
-        RU:req.body.rutitle,
-        EN:req.body.entitle
+        tm:req.body.tmheader,
+        ru:req.body.ruheader,
+        en:req.body.enheader
     }
     let obj={
         name:name,
-        img:files,//suratlar db den cekilen
+        pic:files,//suratlar db den cekilen
         text:text,
         title:title
     }
     try {
         sub.sub.splice(index,1,obj)
+
         await Industry.update({sub:sub.sub},{where:{"id":id}})
-        return res.status(200).send({id:id})
+        return res.status(200).send({id:Number(id),index:Number(index)})
     } catch (err) {
         console.log(err)
         return res.status(400).send("something went wrong")
@@ -197,7 +197,7 @@ exports.addPic=async(req,res,next)=>{
         let filename=randomstring.generate(7)+".webp"
         let buffer=await sharp(file.data).webp({quality:90}).toBuffer()
         await sharp(buffer).toFile("./public/industry/"+filename)
-        if(files[index].img!=null){
+        if(files[index].pic!=null){
             fs.unlink("./public/industry/"+files[index].pic,(err) => {if(err){console.log(err)}})
         }
         files[index].pic=filename

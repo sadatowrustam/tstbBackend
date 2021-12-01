@@ -3,7 +3,7 @@ const {Mail}=require("../models")
 exports.addUser=async(req,res,next)=>{
     let mail=req.body.mail
     try {
-        let user=await Mail.create({mail:mail})
+        let user=await Mail.create({email:mail})
         return res.send(user)
     } catch (err) {
         console.log(err)
@@ -13,9 +13,10 @@ exports.addUser=async(req,res,next)=>{
 exports.getUsers=async(req,res,next)=>{
     try {
         let users=await Mail.findAll({order:[["id","DESC"]]})
+
         return res.send(users)
     } catch (err) {
-        console.log(users)
+        console.log(err)
         return res.status(400).send("something went wrong")        
     }
 }

@@ -22,15 +22,15 @@ app.use("/news",require("./routes/public/news"))//dyndyk
 app.use("/newspapers",require("./routes/public/newspaper"))//dyndyk
 app.use("/banners",require("./routes/public/banner"))//dyndyk
 app.use("/members",require("./routes/public/members"))//dyndyk
-app.use("/province",require("./routes/public/province"))//men dyndym
+app.use("/province",require("./routes/public/province"))//dyndyk
 app.use("/sponsor",require("./routes/public/sponsor"))
 app.use("/events",require("./routes/public/events"))//dyndyk
 app.use("/industry",require("./routes/public/industry"))
-app.use("/commerce",require("./routes/public/commerce"))
+app.use("/commerce",require("./routes/public/commerce"))//dyndyk
 app.use("/constructor",require("./routes/public/constructor"))
 app.use("/mail",require("./routes/public/mail"))//men dyndym
 app.use("/chat",require("./routes/public/chat"))
-app.use("/menu",require("./routes/public/menu"))
+app.use("/menu",require("./routes/public/menu"))//dyndyk
 
 app.listen("5000",async function(){
     await sequelize.authenticate()

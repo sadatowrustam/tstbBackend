@@ -46,12 +46,11 @@ exports.getOne=async(req,res,next)=>{
 exports.editSponsor=async(req,res,next)=>{
     let id=req.query.id
     let name=req.body.name
-    let srok=req.body.srok
     let link=req.body.link
     let active=req.body.active
     try {
-        await Sponsor.update({name:name,srok:srok,link:link,active:active},{where:{"id":id}})
-        return res.send({status:200})
+        await Sponsor.update({name:name,link:link,active:active},{where:{"id":id}})
+        return res.status(200).send({id:Number(id)})
     } catch (err) {
         console.log(err)
         return res.status(400).send("somthing went wrong")
@@ -81,11 +80,10 @@ exports.addPic=async(req,res,next)=>{
     }
     let pic=req.files.pic0
     let a=await sharp(pic.data).webp({quality:90}).resize(1024,728).toBuffer()
-    console.log(filename)
     if(filename!=undefined){
         fs.unlink("./public/sponsor/"+filename,(err) => {if(err){console.log(err)}})
     }
-    filename=randomstring.generate(7)+".webp"
+    filename=pic.name.split(".")[0]+".webp"
     await sharp(a).toFile("./public/sponsor/"+filename)
     try {
         await Sponsor.update({pic:filename},{where:{"id":id}})

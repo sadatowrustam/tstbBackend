@@ -75,19 +75,23 @@ exports.deleteNewspaper=async(req,res,next)=>{
 }
 exports.addPic=async(req,res,next)=>{
     let id=req.query.id
+    let filename1
+    try {
+        let logo=await Newspaper.findOne({where:{id:id}})
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
     let file=req.files.pic0
     let filename=randomstring.generate(7)+"."+file.name.split('.')[1]
-    await file.mv("./public/mysal/"+filename,(err)=>{if(err){console.log(err)}})
-    // try {
-    //     console.log("./public/mysal/"+filename)
-    //     console.log(__dirname+"/../public/mysal/")
-    // } catch (err) {
-    //     console.log(err)
-    //     return res.status(400).send("some")
-    // }
+    let buffer=await sharp(pic.data).webp({quality:90}).toBuffer()
+    await sharp(buffer).toFile("./public/newspaper/"+filename)
+
     try {
         await Newspaper.update({logo:filename},{where:{id:id}})
-        await sharp("./public/mysal/"+filename).toFile("./public/newspapers/pic/"+filename);
+        if(filename1!=undefined){
+            fs.unlink("./public/newspapers")
+        }
         return res.status(200).json(id)
     } catch (err) {
         console.log(err)

@@ -51,11 +51,9 @@ exports.addNews=async (req,res,next)=>{
   }
 }
 exports.addPicture=async (req,res,next)=>{
-  console.log("addPicture called")
   let filename1
   let id=Number(req.query.id)
   let filename
-  console.log("ishleyan ejen ",typeof(id),id)
   try {
     filename=await News.findOne({where:{"id":id}})
     if(filename.pic!=null){
@@ -63,18 +61,15 @@ exports.addPicture=async (req,res,next)=>{
       filename=filename.pic
     }
   } catch (err) {
-    console.log(66,err)
+    console.log(err)
     return res.status(400).send("something went wrong")
   }
-  if(req.files!=undefined){
     let pic=req.files.pic0
-    let format="."+pic.name.split(".")[1]
-    filename=randomstring.generate(7)+format
-    pic.mv("./public/news/"+filename,(err)=>{if(err){console.log(err)}})
-  }
+    filename=randomstring.generate(7)+".webp"
+    let buffer=await sharp(pic.data).webp({quality:90}).toBuffer()
+    await sharp(buffer).toFile("./public/news/"+filename)
   try {
     await News.update({pic:filename},{where:{"id":id}})
-    // await sharp("./public/mysal/"+filename).toFile("./public/news/"+filename)
     if(filename1!=undefined){
       fs.unlink("./public/news/"+filename1,(err)=>{if(err){console.log(err)}})
     }
