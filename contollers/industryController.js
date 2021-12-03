@@ -25,9 +25,9 @@ exports.getOneIndsutry=async(req,res,next)=>{
 }
 exports.editIndustry=async(req,res,next)=>{
     let name={
-        tm:req.body.tm,
-        ru:req.body.ru,
-        en:req.body.en
+        TM:req.body.tm,
+        RU:req.body.ru,
+        EN:req.body.en
     }
     let id=req.query.id
     try {
@@ -50,9 +50,9 @@ exports. deleteIndustry=async(req,res,next)=>{
 }
 exports.addIndustry=async(req,res,next)=>{
     let name={
-        tm:req.body.tm,
-        ru:req.body.ru,
-        en:req.body.en
+        TM:req.body.tm,
+        RU:req.body.ru,
+        EN:req.body.en
     }
     try {
         await Industry.create({name:name})

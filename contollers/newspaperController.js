@@ -4,7 +4,7 @@ const randomstring = require("randomstring")
 const sharp=require("sharp")
 exports.getAllNewspapers=async(req,res,next)=>{
     try{
-        let newspaper=await Newspaper.findAll()
+        let newspaper=await Newspaper.findAll({order:[["id","DESC"]]})
         return res.status(200).send(newspaper)
     }catch(err){
         console.log(err)
@@ -78,19 +78,19 @@ exports.addPic=async(req,res,next)=>{
     let filename1
     try {
         let logo=await Newspaper.findOne({where:{id:id}})
+        filename1=logo.pic
     } catch (err) {
         console.log(err)
         return res.status(400).send("something went wrong")
     }
-    let file=req.files.pic0
-    let filename=randomstring.generate(7)+"."+file.name.split('.')[1]
+    let pic=req.files.pic0
+    let filename=randomstring.generate(7)+"."+".webp"
     let buffer=await sharp(pic.data).webp({quality:90}).toBuffer()
-    await sharp(buffer).toFile("./public/newspaper/"+filename)
-
+    await sharp(buffer).toFile("./public/newspapers/pic/"+filename)
     try {
         await Newspaper.update({logo:filename},{where:{id:id}})
         if(filename1!=undefined){
-            fs.unlink("./public/newspapers")
+            fs.unlink("./public/newspapers/pic/"+filename1,(err)=>{if(err){console.log(err)}})
         }
         return res.status(200).json(id)
     } catch (err) {
@@ -130,5 +130,14 @@ exports.isActiveNewspaper=async(req,res,next)=>{
         console.log(err)
         return res.status(400).send("something went wrong")
     }
+}
+exports.downloadFile=async(req,res,next)=>{
+        let filename=req.query.file
+        res.download("./public/newspapers/files/" +req.query.file,
+          (err) => {
+            if (err) res.status(404).send("<h1>Not found: 404</h1>");
+          }
+        );
+
 }
 

@@ -26,6 +26,15 @@ exports.allConstructors=async(req,res,next)=>{
         return res.status(500).send("something went wrong")
     }
 }
+exports.allConstructorsPro=async(req,res,next)=>{
+    try {
+        let constructor=await Constructorcategory.findAll({order: [["id","DESC"]],include:{association:"constructors",attributes:["id","name"]}})
+        return res.send(constructor)
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
+}
 exports.getOneConstructor=async(req,res,next)=>{
     let id=req.query.id
     try {
@@ -208,11 +217,12 @@ exports.addPic=async(req,res,next)=>{
     let a=await sharp(pic[i].data).webp({quality:90}).resize(1024,728).toBuffer()
     let filename=randomstring.generate(7)+".webp"
     await sharp(a).toFile("./public/constructor/"+id+"/"+filename)
-    newfiles.push(filename)}   
-    let uzynlyk
+    newfiles.push(filename)
+    }   
+    let uzynlyk=newfiles.length+allfiles.length
     console.log(allfiles.length,newfiles.length)
-    if(allfiles.length==0 || allfiles.length==undefined){uzynlyk=1}else{uzynlyk=allfiles.length}
-    if(allfiles.length!=0 &&allfiles.length<newfiles.length){console.log(156);uzynlyk=pic.length}
+    // if(allfiles.length==0 || allfiles.length==undefined){uzynlyk=1}else{uzynlyk=allfiles.length}
+    // if(allfiles.length!=0 &&allfiles.length<newfiles.length){console.log(156);uzynlyk=pic.length}
     console.log(uzynlyk)
     console.log(allfiles,newfiles)
     for (let j=0; j<=uzynlyk; j++){

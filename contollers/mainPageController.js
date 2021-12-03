@@ -1,4 +1,4 @@
-const {Banners,News,Member,Province,Sponsor,Events,Industry}=require("../models")
+const {Banners,News,Member,Province,Sponsor,Events,Industry,Constructorcategory}=require("../models")
 exports.getAll=async(req,res,next)=>{
   let obj={}
       try{
@@ -6,7 +6,7 @@ exports.getAll=async(req,res,next)=>{
           order:[
             ["id","DESC"]
           ],
-          attributes:["name","pic","date","id"],
+          attributes:["name","pic","date","id","header","body"],
           limit:4,
         })
         obj.list=news
@@ -19,7 +19,7 @@ exports.getAll=async(req,res,next)=>{
           order:[
             ["id","DESC"]
           ],
-          attributes:["name","title","pic","date","id"],
+          attributes:["name","body","pic","date","id","header"],
           limit:4,
         })
         obj.list2=news
@@ -56,7 +56,6 @@ exports.getAll=async(req,res,next)=>{
             order:[
                 ['id',"DESC"]
             ],
-            where:{"main":"true"},
             attributes:["id","pic","name"]
           })
           obj.brands=members;
@@ -66,17 +65,22 @@ exports.getAll=async(req,res,next)=>{
   }
   try{
     let sponsor=await Sponsor.findAll({
-        where:{"srok":"true"}
+        where:{"active":"true"}
       })
       obj.sponserler=sponsor
 }catch(err){
     console.log(err)
     return res.status(500).send("something went wrong")
 }
-
+try {
+  let category=await Constructorcategory.findAll({order:[["id","DESC"]]})
+  obj.category=category
+} catch (err) {
+  
+}
 try{
-  let province=await Province.findAll({
-    attributes:["id","place","faks","adress","email","phone"]
+  let province=await Province.findOne({
+    attributes:["id","place"]
   })
   obj.location=province
 }catch(err){

@@ -32,14 +32,13 @@ exports.uploadPic=async(req,res,next)=>{
         console.log(err)
         return res.status(400).send("something went wrong")
     }
-    let filename=randomstring.generate(7)+"."+file.name.split(".")[1]
-    await file.mv("./public/mysal/"+filename,(err)=>{if(err){console.log(err)}})
+    let filename=randomstring.generate(7)+".webp"
+    let buffer=await sharp(file.data).webp({quality:90}).resize(1100,234).toBuffer()
+    await sharp(buffer).resize(1100,234).toFile("./public/banners/"+filename)
     console.log("dyndy")
     allBanners[index].pic=filename
     try {
         await Banners.update({banner:allBanners},{where:{"id":id}})
-        console.log("./public/mysal/"+filename)
-        await sharp("./public/mysal/"+filename).resize(1100,234).toFile("./public/banners/"+filename)
         return res.status(200).send("sucess")
     } catch (err) {
         console.log(err)

@@ -133,24 +133,25 @@ exports.getOneEvent=async (req,res,next)=>{
 exports.loadMore=async (req,res,next)=>{
   let page=req.query.page
   let limit=req.query.limit
-  let startIndex=(+page-1)*limit
-  let endIndex=+page*limit
+  let startIndex=(+page)*limit
+  let endIndex=(+page+1)*limit
   let events
-  try{
-    events=await Events.findAll({
-      order:[["id","DESC"]]}
-    )
-  }catch(err){
-      console.log(err)
-      return res.status(500).send("something went wrong")
+  let tag=req.query.tag
+  if(tag!=undefined){
+    news=await Events.findAll({
+      order:[["id","DESC"]],where:{"active":"true"},
+      where:{ tags: { [Op.contains]: [tag] }}
+    })
+  }else{
+      news=await Events.findAll({
+      order:[["id","DESC"]],where:{"active":"true"}})
   }
-  return res.send(events.slice(startIndex,endIndex))
+  return res.send(events.splice(startIndex,limit))
 }
 exports.addPicture=async(req,res,next)=>{
   let filename1
   let id=req.query.id
   let filename
-  console.log(id)
   try {
     filename=await Events.findOne({where:{id:id}})
     console.log(filename)
@@ -160,17 +161,15 @@ exports.addPicture=async(req,res,next)=>{
   } catch (err) {
     console.log(err)
     return res.status(400).send("something went wrong")
-  }console.log(req.files)
+  }
     let pic=req.files.pic0
-    let format="."+pic.name.split(".")[1]
-    filename=randomstring.generate(7)+format
-    await pic.mv("./public/mysal/"+filename,(err)=>{if(err){console.log(err)}})
-  try {
+    filename=randomstring.generate(7)+".webp"
+    let buffer=await sharp(pic.data).webp({quality:90}).resize(720,400).toBuffer()
+    await sharp(buffer).toFile("./public/events/"+filename)
+    try {
     await Events.update({pic:filename},{where:{"id":id}})
-
-    await sharp("./public/mysal/"+filename).toFile("./public/events/"+filename)
     if(filename1!=undefined){
-      fs.unlink("./public/news/"+filename1,(err)=>{if(err){console.log(err)}})
+      fs.unlink("./public/events/"+filename1,(err)=>{if(err){console.log(err)}})
     }
     return res.status(200).send({status:"success"})
   }catch (err) {

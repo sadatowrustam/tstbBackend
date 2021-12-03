@@ -138,6 +138,7 @@ exports.addPic=async(req,res,next)=>{
   let name
   try {
     filename=await Member.findOne({where:{id:id}})
+
     if(filename.pic!=null){
       filename1=filename.pic
     }

@@ -2,7 +2,7 @@ const {Op}=require("sequelize")
 const sharp = require("sharp");
 const fs=require("fs");
 const randomstring=require("randomstring");
-const {News,News_tags,Banners}=require("../models/");
+const {News,News_tags,Banners,Events}=require("../models/");
 exports.getAll =async (req, res, next) => {
   try{
     let news=await News.findAll({
@@ -66,7 +66,7 @@ exports.addPicture=async (req,res,next)=>{
   }
     let pic=req.files.pic0
     filename=randomstring.generate(7)+".webp"
-    let buffer=await sharp(pic.data).webp({quality:90}).toBuffer()
+    let buffer=await sharp(pic.data).webp({quality:90}).resize(720,400).toBuffer()
     await sharp(buffer).toFile("./public/news/"+filename)
   try {
     await News.update({pic:filename},{where:{"id":id}})
@@ -108,31 +108,27 @@ exports.editNews=async(req,res,next)=>{
 } 
 exports.newsByTag=async(req,res,next)=>{
   let tag=req.query.tag
+  let obj={}
   try{
     let news=await News.findAll({
      where:{ tags: { [Op.contains]: [tag] }}
     })
-    return res.json(news)
+    obj.list=news
   }catch(err){
     console.log(err)
     return res.status(500).json(err)
   }
-}
-exports.getMain=async(req,res,next)=>{
-  let obj={}
-  try{
-    let news=await News.findAll({
-      order:[["id","DESC"]],
-      limit:9,
-      attributes:["body","pic","date","name","id"]
+  try {
+    let events=await Events.findAll({
+      where:{tags: { [Op.contains]: [tag] }}
     })
-    obj.list=news
-  }catch(err){
+    obj.list2=events
+  } catch (err) {
     console.log(err)
-    return res.status(500).send("something went wrong")
+    return res.status(400).json(err)
   }
   try{
-    let banner=await Banners.findAll({})
+    let banner=await Banners.findAll({order: [["id","ASC"]]})
     obj.ads=banner
 
   }catch(err){
@@ -141,10 +137,56 @@ exports.getMain=async(req,res,next)=>{
   }
   try{
     let tags=await News_tags.findAll({
-      attributes:["id","ru","tm","en"]
+      attributes:["id","RU","TM","EN"]
     })
-    obj.tags=tags
-  }catch(err){}
+    obj.tegs=tags
+  }catch(err){
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
+  return res.send(obj)
+}
+exports.getMain=async(req,res,next)=>{
+  let obj={}
+  try{
+    let news=await News.findAll({
+      order:[["id","DESC"]],
+      where:{"active":"true"},
+      limit:9,
+      attributes:["body","pic","date","name","id","header","tags"],
+    })
+    obj.list=news
+  }catch(err){
+    console.log(err)
+    return res.status(500).send("something went wrong")
+  }
+  try{
+    let banner=await Banners.findAll({order: [["id","ASC"]]})
+    obj.ads=banner
+
+  }catch(err){
+    console.log(err)
+    return res.status(500).send("something went wrong")
+  }
+  try{
+    let tags=await News_tags.findAll({
+      attributes:["id","RU","TM","EN"]
+    })
+    obj.tegs=tags
+  }catch(err){
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
+  try {
+    let events=await Events.findAll({order: [["id","DESC"]],
+    where:{"active":"true"},
+    limit:9,
+    attributes:["body","pic","date","name","id","header","tags"]})
+    obj.list2=events
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
   return res.send(obj)
 }
 exports.deleteTag=async(req,res,next)=>{
@@ -190,12 +232,25 @@ exports.loadMore=async (req,res,next)=>{
   let limit=req.query.limit
   let startIndex=(+page)*limit
   let endIndex=(+page+1)*limit
+  console.log(startIndex,endIndex)
   let news
+  let tag=req.query.tag
+  console.log(tag)
     try{
-      news=await News.findAll({
-        order:[["id","DESC"]]}
-        )
-        return res.send(news.slice(startIndex,endIndex))
+      if(tag!="undefined"){
+        console.log("shu ishledi")
+        news=await News.findAll({
+          order:[["id","DESC"]],where:{"active":"true"},
+          where:{ tags: { [Op.contains]: [tag] }}
+        })
+      }else{
+        news=await News.findAll({
+          order:[["id","DESC"]],where:{"active":"true"}})
+        }
+        console.log(news.length)
+        let spliced=news.splice(startIndex,limit)
+        console.log(spliced.length)
+      return res.send(spliced)
     }catch(err){
       console.log(err)
       return res.status(500).send("something went wrong")

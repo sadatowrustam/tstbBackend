@@ -1,10 +1,11 @@
 const {Mail}=require("../models")
 
 exports.addUser=async(req,res,next)=>{
-    let mail=req.body.mail
+    console.log(req.body)
+    let mail=req.body.name
     try {
-        let user=await Mail.create({email:mail})
-        return res.send(user)
+        await Mail.create({email:mail})
+        return res.send({status:200})
     } catch (err) {
         console.log(err)
         return res.send("something went wrong")

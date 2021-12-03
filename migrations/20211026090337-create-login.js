@@ -2,7 +2,7 @@
 //dont migrate
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Logins', {
+    await queryInterface.createTable('login', {
       id: {
         allowNull: false,
         autoIncrement: true,
