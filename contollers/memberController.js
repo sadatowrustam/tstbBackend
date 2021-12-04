@@ -7,6 +7,7 @@ const randomstring=require("randomstring")
 exports.allMembers=async(req,res,next)=>{
     try {
         let members=await Member.findAll({order: [["id","DESC"]]})
+
         return res.json(members)
     }catch(err){
         console.log(err)
@@ -27,6 +28,15 @@ exports.mainMembers=async(req,res,next)=>{
         console.log(err)
 
         return res.json({"err":"something went wrong"})
+    }
+}
+exports.getBycategory=async(req,res,next)=>{
+    try {
+        let members=await Member.findAll({order: [["id","DESC"]],where:{category:req.params.category}})
+        return res.json(members)
+    }catch(err){
+        console.log(err)
+        return res.status(500).send("something went wrong")
     }
 }
 exports.addMember=async(req,res,next)=>{
@@ -54,16 +64,15 @@ exports.addMember=async(req,res,next)=>{
     }else{
         members=member
     }
-    
+    let member1
     try{
-        let member1=await Member.create({name:name1,link:link,category:members,email:email,welayat:welayat,body:body,extra:extra,main:main,address:address})
-        fs.mkdir("./public/member/"+id,(err)=>{if(err){console.log(err)}})
-        fs.mkdir("./public/member/"+id+"/logo",(err)=>{if(err){console.log(err)}})
-        fs.mkdir("./public/member/"+id+"/docs",(err)=>{if(err){console.log(err)}})
+        member1=await Member.create({name:name1,link:link,category:members,email:email,welayat:welayat,body:body,extra:extra,main:main,address:address})
+        fs.mkdir("./public/members/"+member1.id,(err)=>{if(err){console.log(err)}})
+        fs.mkdir("./public/members/"+member1.id+"/docs",(err)=>{if(err){console.log(err)}})
         return res.json({id:member1.id})
     }catch(err){
         console.log(err)
-        rimraf("./public/member/"+name1,()=>{console.log("done 74")})
+        rimraf("./public/members/"+member1,()=>{console.log("done 74")})
         return res.status(400).json({err:"something went wrong"})
     }
 }
@@ -91,33 +100,17 @@ exports.editMember = async(req, res,next) => {
     let extra=req.body.extra
     let welayat=req.body.welayat
     let main=req.body.main
-    let docs=[]
-    let docname=[]
     let members=[]
-    let foldername
-    try {
-       let member=await Member.findOne({where:{id:id}})
-       foldername=member.name
-       startIndex=docs.length-1
-    } catch (err) {
-        console.log(err)
-        return res.status(400).send("something went wrong")
-    }
-    if(foldername!=name){
-        console.log("menzesh dal",foldername,name)
-        fs.rename("./public/member/"+foldername,"./public/member/"+name,(err)=>{if(err){console.log(err)}})
-    }
     if(typeof(member)=="string"){
         members.push(member)
     }else{
         members=member
     }
     try{
-        let member=await Member.update({name:name,link:link,category:members,email:email,welayat:welayat,body:body,extra:extra,main:main},{where:{"id":id}})
+        await Member.update({name:name,link:link,category:members,email:email,welayat:welayat,body:body,extra:extra,main:main},{where:{"id":id}})
         return res.status(200).send({status:'success'})
     }catch(err){
         console.log(err)
-
         return res.status(400).json({err:"something went wrong"})
     }
 }
@@ -125,10 +118,11 @@ exports.deleteMember=async(req,res,next)=>{
     let id=req.query.id
     try {
         await Member.destroy({where:{id:id}})
+        rimraf("./public/members/"+id,(err)=>{if(err){console.log(err)}})
         return res.send("sucess")
     } catch (err) {
         console.log(err)
-        return res.status(500).send("something went wrong")
+        return res.status(400).send("something went wrong")
     }
 }
 exports.addPic=async(req,res,next)=>{
@@ -136,26 +130,24 @@ exports.addPic=async(req,res,next)=>{
   let id=req.query.id
   let filename
   let name
-  try {
-    filename=await Member.findOne({where:{id:id}})
-
-    if(filename.pic!=null){
-      filename1=filename.pic
-    }
-    name=filename.name
-  }catch (err) {
-    console.log(err)
-    return res.status(400).json({err:"something went wrong"})
-  }
+//   try {
+//     filename=await Member.findOne({where:{id:id}})
+//     if(filename.pic!=null){        
+//       filename1=filename.pic
+//     }
+//     name=filename.name
+//   }catch (err) {
+//     console.log(err)
+//     return res.status(400).json({err:"something went wrong"})
+//   }
     let pic=req.files.pic0
-    // let format="."+pic.name.split(".")[1]
-    filename=pic.name
-    await pic.mv("./public/member/"+id+"/logo/"+filename,(err)=>{if(err){console.log(155,err)}})
-    // await sharp("./public/member/"+filename).toFile("./public/member/"+name+"/logo/"+(1+filename))
+    filename=pic.name.split(".")[0]+".webp"
+    let buffer=await sharp(pic.data).webp({quality:90}).resize(64,64).toBuffer()
+    await sharp(buffer).toFile("./public/members/"+id+"/"+filename)
     try {
         await Member.update({pic:filename},{where:{id:id}})
     if(filename1!=undefined){
-      fs.unlink("./public/member/"+name+"/logo/"+filename1,(err)=>{if(err){console.log(err)}})
+      fs.unlink("./public/members/"+id+"/"+filename1,(err)=>{if(err){console.log(err)}})
     }
     return res.status(200).json({status:"success"})
   }catch (err) {
@@ -181,11 +173,16 @@ exports.addFile=async(req,res,next)=>{
       return res.status(400).send("something went wrong")
     }
     let pic=Object.values(req.files)
+    console.log(Math.round((pic[0].size)/1024))
     if(typeof(filename)=="string"){allfiles.push(filename)}
     for(let i=0;i<pic.length;i++){
           filename=pic[i].name
-          await pic[i].mv("./public/member/"+name+"/docs/"+filename,(err)=>{if(err){console.log(err)}})
-          allfiles.push(filename)
+          await pic[i].mv("./public/members/"+id+"/docs/"+filename,(err)=>{if(err){console.log(err)}})
+          let obj={
+              filename:filename,
+              size:Math.round(pic[i].size/1024)
+          }
+          allfiles.push(obj)
       }
     try {
       await Member.update({files:allfiles},{where:{"id":id}})
@@ -202,7 +199,8 @@ exports.deleteFile=async(req,res,next)=>{
     try {
         let file=await Member.findOne({where: {id:id}})
         allFiles=file.files
-        allFiles.splice(index,1)
+        let filename=allFiles.splice(index,1)
+        fs.unlink("./public/members/"+id+"/docs/"+filename)
         await Member.update({files:allFiles},{where:{"id":id}})
         return res.status(200).send("sucess")
     } catch (err) {

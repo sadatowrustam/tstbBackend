@@ -18,7 +18,7 @@ module.exports = {
         type: DataTypes.STRING
       },
       files:{
-        type:DataTypes.ARRAY(DataTypes.STRING)
+        type:DataTypes.JSONB
       },
       category:{
         type:DataTypes.ARRAY(DataTypes.STRING)

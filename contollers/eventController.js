@@ -130,6 +130,18 @@ exports.getOneEvent=async (req,res,next)=>{
     return res.status(400).send("something went wrong")
   }
 }
+exports.getOneEventFront=async(req,res,next)=>{
+  let id=req.query.id
+  try {
+    let event=await Events.findOne({
+      where:{"id":id}
+    })
+    return res.send(event)
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
+}
 exports.loadMore=async (req,res,next)=>{
   let page=req.query.page
   let limit=req.query.limit
@@ -137,13 +149,15 @@ exports.loadMore=async (req,res,next)=>{
   let endIndex=(+page+1)*limit
   let events
   let tag=req.query.tag
-  if(tag!=undefined){
-    news=await Events.findAll({
+  if(tag!="undefined"){
+   
+    events=await Events.findAll({
       order:[["id","DESC"]],where:{"active":"true"},
       where:{ tags: { [Op.contains]: [tag] }}
     })
   }else{
-      news=await Events.findAll({
+   
+      events=await Events.findAll({
       order:[["id","DESC"]],where:{"active":"true"}})
   }
   return res.send(events.splice(startIndex,limit))

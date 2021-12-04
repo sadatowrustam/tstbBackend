@@ -227,6 +227,19 @@ exports.getOneNews=async (req,res,next)=>{
     return res.status(500).send("something went wrong")
   }
 }
+exports.getOneNewsFront=async (req,res,next)=>{
+  let id=req.query.id
+  try {
+    let news=await News.findOne({
+      where:{"id":id}
+    })
+    return res.status(200).send(news)
+  } catch (err) {
+    console.log(err)
+    return res.status(500).send("something went wrong")
+  }
+
+}
 exports.loadMore=async (req,res,next)=>{
   let page=req.query.page
   let limit=req.query.limit

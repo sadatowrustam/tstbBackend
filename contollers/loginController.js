@@ -19,10 +19,8 @@ exports.setting=async(req,res,next)=>{
 exports.login=async(req,res,next)=>{
     let name=req.body.name
     let password=req.body.pass
-    console.log(name,password)
     try {
         let admin=await Login.findOne()
-        console.log(admin)
         if(admin.name==name){
             console.log("ady dogry")
             bcrypt.compare(password,admin.password,function(err,result){

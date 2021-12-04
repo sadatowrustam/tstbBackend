@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     link: DataTypes.STRING,
     pic: DataTypes.STRING,
     body:DataTypes.JSONB,
-    files:DataTypes.ARRAY(DataTypes.STRING),
+    files:DataTypes.JSONB,
     category:DataTypes.ARRAY(DataTypes.STRING),
     email:DataTypes.STRING,
     extra:DataTypes.STRING,
