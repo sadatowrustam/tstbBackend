@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Bussiness.init({
     body: DataTypes.JSONB,
     header:DataTypes.JSONB,
-    files: DataTypes.ARRAY(DataTypes.STRING)
+    files: DataTypes.JSONB
   }, {
     sequelize,
     tableName:"bussiness",

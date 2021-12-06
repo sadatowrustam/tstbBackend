@@ -18,7 +18,7 @@ module.exports = {
         type: DataTypes.JSONB
       },
       files: {
-        type: DataTypes.ARRAY(DataTypes.STRING)
+        type: DataTypes.JSONB
       },
       createdAt: {
         allowNull: false,

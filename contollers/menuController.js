@@ -2,6 +2,7 @@ const {Menu,Bussiness,License}=require('../models')
 const randomstring = require("randomstring")
 const fs=require("fs")
 const sharp=require("sharp")
+
 exports.addSettings=async(req,res,next)=>{
     try {
         await Menu.create({body:{en:[""],ru:[""],tm:[""],},header:{en:[""],ru:[""],tm:[""]}})//consultation
@@ -177,8 +178,7 @@ exports.addPic=async(req,res,next)=>{
       newfiles.push(filename)
     }
 
-    let uzynlyk
-    console.log(allfiles.length,newfiles.length)
+    let uzynlyk=allfiles.length+newfiles.length
     if(allfiles.length==0 || allfiles.length==undefined){uzynlyk=1}else{uzynlyk=allfiles.length}
     if(allfiles.length!=0 &&allfiles.length<newfiles.length){console.log(156);uzynlyk=pic.length}
     console.log(uzynlyk)
@@ -288,11 +288,15 @@ exports.addBussinessFile=async(req,res,next)=>{
       return res.status(400).send({message:"something went wrong"})
   }
   let pic=Object.values(req.files)
-  for (let i = 0; i < pic.length; i++) {
-    let filename = pic[i].name;      
-    await pic[i].mv("./public/bussiness/"+id+"/"+filename,(err)=>{if(err){console.log(200,err)}})
-    allfiles.push(filename)
-  }
+  for(let i=0;i<pic.length;i++){
+        filename=pic[i].name
+        await pic[i].mv("./public/menu/"+filename,(err)=>{if(err){console.log(err)}})
+        let obj={
+            filename:filename,
+            size:size(pic[i].size)
+        }
+        allfiles.push(obj)
+    }
   console.log(allfiles)
   try {
     await Bussiness.update({files:allfiles},{where:{id:id}})
@@ -321,6 +325,15 @@ exports.deleteBussinessFile=async(req,res,next)=>{
 exports.getAllLicense=async(req,res,next)=>{
   try {
     let license=await License.findAll({order: [["id","DESC"]]})
+    return res.status(200).send(license)
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
+}
+exports.getLicenseHeader=async(req,res,next)=>{
+  try {
+    let license=await License.findAll({order: [["id","DESC"]],attributes:["id","header"]})
     return res.status(200).send(license)
   } catch (err) {
     console.log(err)
@@ -400,11 +413,15 @@ exports.addLicenseFile=async(req,res,next)=>{
       return res.status(400).send({message:"something went wrong"})
   }
   let pic=Object.values(req.files)
-  for (let i = 0; i < pic.length; i++) {
-    let filename = pic[i].name;      
-    await pic[i].mv("./public/license/"+id+"/"+filename,(err)=>{if(err){console.log(200,err)}})
-    allfiles.push(filename)
-  }
+  for(let i=0;i<pic.length;i++){
+        filename=pic[i].name
+        await pic[i].mv("./public/menu/"+filename,(err)=>{if(err){console.log(err)}})
+        let obj={
+            filename:filename,
+            size:size(pic[i].size)
+        }
+        allfiles.push(obj)
+    }
   console.log(allfiles)
   try {
     await License.update({files:allfiles},{where:{id:id}})
@@ -433,10 +450,23 @@ exports.deleteLicenseFile=async(req,res,next)=>{
     return res.status(400).send("somthing went wrong")
   }
 }
+
 function toArray(el){
     let array=[]
     if(typeof (el) === 'string'){
         array.push(el)
         return array
     }else{return el}
+}
+function size(file){
+  let size = 0
+  let status
+  size=Math.round(file/1024)
+  status="Kb"
+  if(size>1024){
+    size=size/1024
+    size=size.toFixed(2)
+    status="Mb"
+  }
+  return size+status
 }

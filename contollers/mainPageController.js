@@ -1,4 +1,5 @@
 const {Banners,News,Member,Province,Sponsor,Events,Industry,Constructorcategory}=require("../models")
+const {Op}=require("sequelize")
 exports.getAll=async(req,res,next)=>{
   let obj={}
       try{
@@ -42,8 +43,9 @@ exports.getAll=async(req,res,next)=>{
       try {
         let banners=await Industry.findAll({
           order:[
-              ["id","ASC"]
+              ["id","DESC"]
           ],
+          where:{sub:{[Op.not]: null}},
           attributes:["id","name"]
       })
       obj.karhanalar=banners

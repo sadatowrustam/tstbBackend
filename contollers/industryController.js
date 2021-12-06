@@ -1,4 +1,5 @@
 const{Industry}=require("../models")
+const {Op}=require("sequelize")
 const sharp=require("sharp")
 const fs=require("fs")
 const randomstring = require("randomstring")
@@ -11,6 +12,24 @@ exports.getAll=async(req,res,next)=>{
     }catch(err){
         console.log(err)
         return res.send("error")
+    }
+}
+exports.getAllFront=async(req,res,next)=>{
+    let id=req.query.id
+    let index=req.query.index
+
+    try{
+        let industry=await Industry.findAll({
+            order:[["id","DESC"]],
+            where:{sub:{[Op.not]: null}},
+        })
+        let sub=await Industry.findOne({where:{id:id}})
+        console.log(sub.sub[index])
+        sub=sub.sub[index]
+        return res.send([industry,sub])
+    }catch(err){
+        console.log(err)
+        return res.status(400).send("error")
     }
 }
 exports.getOneIndsutry=async(req,res,next)=>{
@@ -66,7 +85,8 @@ exports.getOneSubcategory=async(req,res,next)=>{
     let id=req.query.id
     let index=req.query.index
     try{
-        let sub=await Industry.findOne({attributes:["sub"]},{where:{"id":id}})
+        let sub=await Industry.findOne({where:{"id":id}})
+        console.log(sub.sub)
         return res.send(sub.sub[index])
     }catch(err){
         console.log(err)

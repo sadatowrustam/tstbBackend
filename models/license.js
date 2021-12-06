@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.JSONB,
     header: DataTypes.JSONB,
     body: DataTypes.JSONB,
-    files: DataTypes.ARRAY(DataTypes.STRING)
+    files: DataTypes.JSONB
   }, {
     sequelize,
     tableName:"license",

@@ -110,10 +110,9 @@ exports.addSubcategory=async(req,res,next)=>{
 }
 exports.getOneSubcategory=async(req,res,next)=>{
     let boshmy=false
-
     let id=req.query.id
     try {
-        let category = await Constructor.findOne({where:{id:id}})
+        let category = await Constructor.findOne({where:{id:id},include:"banner"})
         if(category.pic!=null){
             category.pic.forEach((e,i)=>{
             if(e==" "){category.pic.splice(i,1);boshmy=true}
@@ -188,6 +187,7 @@ exports.deleteSubcategory =async(req,res,next)=>{
     let id=req.query.id
     try {
         await Constructor.destroy({where:{id:id}})
+        rimraf("./public/constructor/"+id,(err)=>{if(err){console.log(err)}})
         return res.status(200).send({status:200})
     } catch (err) {
         console.log(err)

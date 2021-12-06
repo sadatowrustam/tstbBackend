@@ -5,10 +5,11 @@ const rimraf = require("rimraf")
 const randomstring = require("randomstring")
 exports.getMain=async(req,res,next)=>{
     let category=req.query.category
-    let welayat=req.query.welayat
+    let welayat=shBarla(req.query.welayat)
+    
+
     try {
-        let commerce=await Commerce.findAll({
-            where:{welayat:welayat,category:category}
+        let commerce=await CommerceCategory.findAll({order:[["id","DESC"]],include:{association:"commerce",where:{welayat:welayat}}
         })
         return res.send(commerce)
     } catch (err) {
@@ -196,4 +197,16 @@ exports.deleteCategory =async(req,res,next)=>{
         console.log(err)
         return res.send(500).send("something went wrong")
     }
+}
+function shBarla(welayat){
+    let newwelayat=""
+    for (let i=0; i<welayat.length; i++){
+        if(welayat[i]+welayat[i+1]=="sh"){
+            newwelayat+="ş"
+            i+=1
+        }else{
+            newwelayat+=welayat[i]
+        }
+    }
+    return newwelayat
 }
