@@ -21,8 +21,7 @@
     "randomstring": "^1.2.1",
     "rimraf": "^3.0.2",
     "sequelize": "^6.6.5",
-    "sharp": "^0.29.1",
-    "socket.io": "^4.3.2"
+    "sharp": "^0.29.1"
   },
   "devDependencies": {},
   "nodemonConfig": {
