@@ -77,7 +77,7 @@ exports.deleteConstructor=async(req,res,next)=>{
         return res.status(200).send({status:200})
     } catch (err) {
         console.log(err)
-        return res.status(500).send("something went wrong")
+        return res.status(400).send("something went wrong")
     }
 }
 exports.addSubcategory=async(req,res,next)=>{

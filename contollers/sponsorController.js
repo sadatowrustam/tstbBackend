@@ -79,7 +79,7 @@ exports.addPic=async(req,res,next)=>{
         return res.status(400).send("Suratda problema yuze cykdy")
     }
     let pic=req.files.pic0
-    let a=await sharp(pic.data).webp({quality:90}).resize(1024,728).toBuffer()
+    let a=await sharp(pic.data).webp({quality:90}).resize(65,55).toBuffer()
     if(filename!=undefined){
         fs.unlink("./public/sponsor/"+filename,(err) => {if(err){console.log(err)}})
     }

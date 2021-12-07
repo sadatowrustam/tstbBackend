@@ -85,7 +85,7 @@ exports.addPic=async(req,res,next)=>{
     }
     let pic=req.files.pic0
     let filename=randomstring.generate(7)+"."+".webp"
-    let buffer=await sharp(pic.data).webp({quality:90}).toBuffer()
+    let buffer=await sharp(pic.data).webp({quality:90}).resize(350,500).toBuffer()
     await sharp(buffer).toFile("./public/newspapers/pic/"+filename)
     try {
         await Newspaper.update({logo:filename},{where:{id:id}})

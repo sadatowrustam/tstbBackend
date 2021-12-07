@@ -130,16 +130,6 @@ exports.addPic=async(req,res,next)=>{
   let id=req.query.id
   let filename
   let name
-//   try {
-//     filename=await Member.findOne({where:{id:id}})
-//     if(filename.pic!=null){        
-//       filename1=filename.pic
-//     }
-//     name=filename.name
-//   }catch (err) {
-//     console.log(err)
-//     return res.status(400).json({err:"something went wrong"})
-//   }
     let pic=req.files.pic0
     filename=pic.name.split(".")[0]+".webp"
     let buffer=await sharp(pic.data).webp({quality:90}).resize(64,64).toBuffer()

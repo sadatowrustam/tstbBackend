@@ -173,7 +173,7 @@ exports.addPic=async(req,res,next)=>{
     let pic1=req.files
     for (let i=0; i<pic.length; i++) {
       filename=randomstring.generate(7)+".webp"
-      let buffer=await sharp(pic[i].data).webp({quality: 90}).resize(1200,720).toBuffer()
+      let buffer=await sharp(pic[i].data).webp({quality: 90}).resize(1100,543).toBuffer()
       await sharp(buffer).toFile("./public/menu/"+filename)
       newfiles.push(filename)
     }
