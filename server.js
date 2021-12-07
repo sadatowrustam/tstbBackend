@@ -24,21 +24,21 @@ app.use(cors({
 // })
 app.use(express.static("./public"))
 app.use(require("morgan")("dev"))
-app.use("/",require("./routes/public/main"))
-app.use("/news",require("./routes/public/news"))//dyndyk
-app.use("/newspapers",require("./routes/public/newspaper"))//dyndyk
-app.use("/banners",require("./routes/public/banner"))//dyndyk
-app.use("/members",require("./routes/public/members"))//dyndyk
-app.use("/province",require("./routes/public/province"))//dyndyk
-app.use("/sponsor",require("./routes/public/sponsor"))
-app.use("/events",require("./routes/public/events"))//dyndyk
-app.use("/industry",require("./routes/public/industry"))
-app.use("/commerce",require("./routes/public/commerce"))//dyndyk
-app.use("/constructor",require("./routes/public/constructor"))
-app.use("/mail",require("./routes/public/mail"))//dyndyk
-app.use("/chat",require("./routes/public/chat"))
-app.use("/menu",require("./routes/public/menu"))//dyndyk
-app.use("/login",require("./routes/public/login"))
+app.use("/",require("./routes/main"))
+app.use("/news",require("./routes/news"))//dyndyk
+app.use("/newspapers",require("./routes/newspaper"))//dyndyk
+app.use("/banners",require("./routes/banner"))//dyndyk
+app.use("/members",require("./routes/members"))//dyndyk
+app.use("/province",require("./routes/province"))//dyndyk
+app.use("/sponsor",require("./routes/sponsor"))
+app.use("/events",require("./routes/events"))//dyndyk
+app.use("/industry",require("./routes/industry"))
+app.use("/commerce",require("./routes/commerce"))//dyndyk
+app.use("/constructor",require("./routes/constructor"))
+app.use("/mail",require("./routes/mail"))//dyndyk
+app.use("/chat",require("./routes/chat"))
+app.use("/menu",require("./routes/menu"))//dyndyk
+app.use("/login",require("./routes/login"))
 app.listen("5000",async function(){
     await sequelize.authenticate()
     console.log("app is listening on 5000")

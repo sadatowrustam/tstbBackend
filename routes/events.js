@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const {getMain,addEvent,deleteEvent,getOneEvent,editEvent,loadMore,getAll,getTags,addPicture,isActiveEvent,getOneEventFront}=require("../../contollers/eventController")
+const {getMain,addEvent,deleteEvent,getOneEvent,editEvent,loadMore,getAll,getTags,addPicture,isActiveEvent,getOneEventFront}=require("../contollers/eventController")
 router.get("/",getMain)
 router.get("/getAll",getAll)
 router.post("/addEvent",addEvent)

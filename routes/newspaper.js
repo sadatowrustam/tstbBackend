@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const {getAllNewspapers,addNewspaper,getOneNewspaper,editNewspaper,deleteNewspaper,addPic,addFile,isActiveNewspaper, downloadFile}=require("../../contollers/newspaperController")
+const {getAllNewspapers,addNewspaper,getOneNewspaper,editNewspaper,deleteNewspaper,addPic,addFile,isActiveNewspaper, downloadFile}=require("../contollers/newspaperController")
 router.get("/",getAllNewspapers)
 router.post("/add",addNewspaper)
 router.post("/addPic",addPic)

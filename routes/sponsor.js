@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const{getSponsers,addSponsor,addPic,getOne,editSponsor,deleteSponsor,isActive,getAll}=require("../../contollers/sponsorController")
+const{getSponsers,addSponsor,addPic,getOne,editSponsor,deleteSponsor,isActive,getAll}=require("../contollers/sponsorController")
 router.get("/",getSponsers)
 router.get("/getAll",getAll)
 router.post("/add",addSponsor)

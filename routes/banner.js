@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const {allBanners,addBanners,editBanner,addBannersSettings,getOne,uploadPic,deleteBanner,getOneBanner,isActiveBanner, isActiveBanners}=require("../../contollers/bannerController")
+const {allBanners,addBanners,editBanner,addBannersSettings,getOne,uploadPic,deleteBanner,getOneBanner,isActiveBanner, isActiveBanners}=require("../contollers/bannerController")
 router.get("/",allBanners)
 router.get("/getOne",getOne)
 router.get("/getOneBanner",getOneBanner)

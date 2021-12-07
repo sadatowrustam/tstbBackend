@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const {getMain, addCommerce,getAll,getOne,editCommmerce,deleteCommerce,deletePic,addCategory,getCategory,deleteCategory,getCategorySimple,addPic}=require("../../contollers/commerceController")
+const {getMain, addCommerce,getAll,getOne,editCommmerce,deleteCommerce,deletePic,addCategory,getCategory,deleteCategory,getCategorySimple,addPic}=require("../contollers/commerceController")
 router.get("/",getMain)
 router.post("/",addCommerce)
 router.delete("/",deleteCommerce)

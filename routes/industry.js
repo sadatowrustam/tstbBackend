@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const{addIndustry,addSubcategory,editSubcategory,getAll,getOneIndsutry,editIndustry, deleteIndustry, deleteSubcategory,getOneSubcategory,addPic, getAllFront}=require("../../contollers/industryController")
+const{addIndustry,addSubcategory,editSubcategory,getAll,getOneIndsutry,editIndustry, deleteIndustry, deleteSubcategory,getOneSubcategory,addPic, getAllFront}=require("../contollers/industryController")
 router.get("/",getAll)
 router.get("/front",getAllFront)
 router.post("/",addIndustry)

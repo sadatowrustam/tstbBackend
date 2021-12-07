@@ -1,5 +1,5 @@
 const express=require("express")
-const {getMain,addTags,addNews,editNews,newsByTag,deleteTag,deleteNews,getOneNews,loadMore,getAll,getTags,addPicture,isActiveNews,getOneNewsFront}=require("../../contollers/newsController")
+const {getMain,addTags,addNews,editNews,newsByTag,deleteTag,deleteNews,getOneNews,loadMore,getAll,getTags,addPicture,isActiveNews,getOneNewsFront}=require("../contollers/newsController")
 const router=express.Router()
 //news
 router.get("/",getMain)
