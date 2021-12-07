@@ -23,7 +23,7 @@ exports.allConstructors=async(req,res,next)=>{
         return res.send(constructor)
     } catch (err) {
         console.log(err)
-        return res.status(500).send("something went wrong")
+        return res.status(500).send("yalnyshlyk")
     }
 }
 exports.allConstructorsPro=async(req,res,next)=>{
