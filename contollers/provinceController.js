@@ -35,6 +35,14 @@ exports.addSettings=async(req,res,next)=>{
                 email:"",
                 phone:""
             },
+            dashoguz:{
+                tmAddress:"",
+                ruAddress:"",
+                enAddress:"",
+                faks:"",
+                email:"",
+                phone:""
+            },
             lebap:{
                 tmAddress:"",
                 ruAddress:"",
