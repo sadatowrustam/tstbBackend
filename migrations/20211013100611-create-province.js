@@ -3,6 +3,12 @@
 module.exports = {
   up: async (queryInterface, DataTypes) => {
     await queryInterface.createTable('provinces', {
+    id:{
+      type:DataTypes.INTEGER,
+      allowNull:true,
+      autoIncrement:true,
+      primaryKey:true,
+    } ,   
       place: {
         type: DataTypes.JSONB
       },

@@ -3,7 +3,7 @@ const {Province}=require("../models")
 exports.addSettings=async(req,res,next)=>{
     try{
         await Province.create()
-    return res.send("sucess")
+        return res.send("sucess")
     }catch(err){
         console.log(err)
         return res.send("somthing went wrong")
@@ -14,7 +14,8 @@ exports.getProvince=async(req,res,next)=>{
         let province=await Province.findOne({where:{id:1}})
         return res.send(province.place)
     } catch (err) {
-        
+        console.log(err)
+        return res.send(400).send("something went wrong")
     }
 }
 exports.editProvince=async(req,res,next)=>{
