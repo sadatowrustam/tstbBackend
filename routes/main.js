@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const {getAll}=require("../contollers/mainPageController")
+const {getAll}=require("../controllers/mainPageController")
 router.get("/",getAll)
 router.get("/something",function(req,res){
     res.send("bolaydy")
