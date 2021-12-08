@@ -2,7 +2,48 @@ const {Province}=require("../models")
 
 exports.addSettings=async(req,res,next)=>{
     try{
-        await Province.create()
+        await Province.create({place:{
+            ashgabat:{
+                tmAddress:"",
+                ruAddress:"",
+                enAddress:"",
+                faks:"",
+                email:"",
+                phone:""
+            },
+            ahal:{
+                tmAddress:"",
+                ruAddress:"",
+                enAddress:"",
+                faks:"",
+                email:"",
+                phone:""
+            },
+            balkan:{
+                tmAddress:"",
+                ruAddress:"",
+                enAddress:"",
+                faks:"",
+                email:"",
+                phone:""
+            },
+            mary:{
+                tmAddress:"",
+                ruAddress:"",
+                enAddress:"",
+                faks:"",
+                email:"",
+                phone:""
+            },
+            lebap:{
+                tmAddress:"",
+                ruAddress:"",
+                enAddress:"",
+                faks:"",
+                email:"",
+                phone:""
+            }
+        }})
         return res.send("sucess")
     }catch(err){
         console.log(err)
