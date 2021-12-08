@@ -16,12 +16,19 @@ exports.addSettings=async(req,res,next)=>{
     }
 }
 exports.addStatistika=async(req,res,next)=>{
-  await Menu.create({body:{yearswithyou:0,bussinessman:0,projects:0,school:0,today:0,week:0,month:0}})
-  return res.status("succes")
+  try {
+    await Menu.create({body:{yearswithyou:0,bussinessman:0,projects:0,school:0,today:0,week:0,month:0}})
+    return res.send("success")
+    
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
 }
 exports.getStatistika=async(req,res,next)=>{
   try {
     let statistika = await Menu.findOne({where:{id:4}})
+
     return res.status(200).send(statistika.body)
   } catch (err) {
     console.log(err)

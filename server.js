@@ -5,7 +5,7 @@ const app=express()
 const http=require("http")
 const fs=require("fs")
 app.use(express.json())
-
+const{dayControl}=require("./utils/dayControl")
 app.use(express.urlencoded({extended:true}))
 app.use(fileupload())
 const cors=require("cors")
@@ -22,6 +22,8 @@ app.use(cors({
 //         filename.close()
 //     })
 // })
+
+app.use(dayControl)
 app.use(express.static("./public"))
 app.use(require("morgan")("dev"))
 app.use("/",require("./routes/main"))
@@ -36,7 +38,7 @@ app.use("/industry",require("./routes/industry"))
 app.use("/commerce",require("./routes/commerce"))//dyndyk
 app.use("/constructor",require("./routes/constructor"))
 app.use("/mail",require("./routes/mail"))//dyndyk
-app.use("/chat",require("./routes/chat"))
+// app.use("/chat",require("./routes/chat"))
 app.use("/menu",require("./routes/menu"))//dyndyk
 app.use("/login",require("./routes/login"))
 app.listen("5000",async function(){
