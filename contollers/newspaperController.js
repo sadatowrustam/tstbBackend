@@ -11,6 +11,15 @@ exports.getAllNewspapers=async(req,res,next)=>{
         return res.json({"err":"something went wrong"})
     }
 }
+exports.getAllNewspaperFront=async(req,res,next)=>{
+    try{
+        let newspaper=await Newspaper.findAll({order:[["id","DESC"]],where:{"active":"true"}})
+        return res.status(200).send(newspaper)
+    }catch(err){
+        console.log(err)
+        return res.json({"err":"something went wrong"})
+    }
+}
 exports.addNewspaper=async(req,res,next)=>{
     let name={
         tm:req.body.tm,

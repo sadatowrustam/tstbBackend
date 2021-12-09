@@ -1,4 +1,4 @@
-const {Banners,News,Member,Province,Sponsor,Events,Industry,Constructorcategory}=require("../models")
+const {Banners,News,Member,Province,Sponsor,Events,Industry,Constructorcategory,Menu}=require("../models")
 const {Op}=require("sequelize")
 exports.getAll=async(req,res,next)=>{
   let obj={}
@@ -78,7 +78,8 @@ try {
   let category=await Constructorcategory.findAll({order:[["id","DESC"]]})
   obj.category=category
 } catch (err) {
-  
+  console.log(err)
+  return res.status(400).send("something went wrong")
 }
 try{
   let province=await Province.findOne({
@@ -89,6 +90,19 @@ try{
   console.log(err)
   return res.status(500).send("something went wrong")
 }
-obj.statictika=["gowrak 12313","gowrak 223","12 yyl bile","80300 gowrak"]
+try {
+  let statistika=await Menu.findOne({where: {id:4}})
+  let array=[]
+  array.push(statistika.body.bussinessman)
+  array.push(statistika.body.projects)
+  array.push(statistika.body.yearswithyou)
+  array.push(statistika.body.school)
+  array.push(statistika.body.today)
+  array.push(statistika.body.week)
+  array.push(statistika.body.month)
+  obj.statictika=array
+} catch (err) {
+  console.log(err)  
+}
   return res.send(obj)
 }

@@ -4,10 +4,7 @@ const sharp = require("sharp")
 const rimraf = require("rimraf")
 const randomstring = require("randomstring")
 exports.getMain=async(req,res,next)=>{
-    let category=req.query.category
     let welayat=shBarla(req.query.welayat)
-    
-
     try {
         let commerce=await CommerceCategory.findAll({order:[["id","DESC"]],include:{association:"commerce",where:{welayat:welayat}}
         })

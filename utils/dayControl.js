@@ -1,7 +1,7 @@
 const{Menu}=require("../models")
 const schedule = require('node-schedule');
-exports.dayControl=async()=>{
-    const job = schedule.scheduleJob('0 0 0 * * *',async ()=>{
+exports.dayControl=async()=>{``
+    const job = schedule.scheduleJob('* 5 * * * *',async ()=>{
         let statistika=await Menu.findOne({where: {id:4}})
         console.log(statistika.body)
         // statistika.body.day

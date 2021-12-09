@@ -1,5 +1,6 @@
 const {Op}=require("sequelize")
 const sharp = require("sharp");
+const {textEditSimple}=require("../utils/textEdit")
 const fs=require("fs");
 const randomstring=require("randomstring");
 const {News,News_tags,Banners,Events}=require("../models/");
@@ -28,9 +29,9 @@ exports.addTags=async(req,res,next)=>{
 }
 exports.addNews=async (req,res,next)=>{
   let body={
-    TM:req.body.text,
-    RU:req.body.text2, 
-    EN:req.body.text3
+    TM:textEditSimple(req.body.text),
+    RU:textEditSimple(req.body.text2), 
+    EN:textEditSimple(req.body.text3)
   }
   let tags=req.body.tag
   let header={
@@ -81,9 +82,9 @@ exports.addPicture=async (req,res,next)=>{
 }
 exports.editNews=async(req,res,next)=>{
   let body={
-    TM:req.body.text,
-    RU:req.body.text2, 
-    EN:req.body.text3
+    TM:textEditSimple(req.body.text),
+    RU:textEditSimple(req.body.text2), 
+    EN:textEditSimple(req.body.text3)
   }
   let tags=req.body.tag
   let header={
@@ -93,7 +94,6 @@ exports.editNews=async(req,res,next)=>{
   }
   let filename
   let id=req.query.id
-  console.log(99,id)
   let status=req.body.active
   let name=req.body.name
   let topar=req.body.topar

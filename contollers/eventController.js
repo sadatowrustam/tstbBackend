@@ -1,6 +1,7 @@
 const {Op}=require("sequelize")
 const sharp = require("sharp");
 const {Events,Banners,News_tags}=require("../models/");
+const{textEditSimple}=require("../utils/textEdit")
 const fs = require("fs")
 const randomstring = require("randomstring")
 exports.getAll=async(req,res,next)=>{
@@ -15,10 +16,10 @@ exports.getAll=async(req,res,next)=>{
 exports.addEvent=async (req,res,next)=>{
 
   let body={
-    TM:req.body.text,
-    RU:req.body.text2, 
-    EN:req.body.text3
-  }
+    TM:textEditSimple(req.body.text),
+    RU:textEditSimple(req.body.text2),
+    EN:textEditSimple(req.body.text3)
+}
   let tags=req.body.tag
   let header={
     TM:req.body.tmheader,
@@ -40,10 +41,10 @@ exports.addEvent=async (req,res,next)=>{
 }
 exports.editEvent=async(req,res,next)=>{
   let body={
-    TM:req.body.text,
-    RU:req.body.text2, 
-    EN:req.body.text3
-  }
+    TM:textEditSimple(req.body.text),
+    RU:textEditSimple(req.body.text2),
+    EN:textEditSimple(req.body.text3)
+}
   let tags=req.body.tag
   let header={
     TM:req.body.headerTM,

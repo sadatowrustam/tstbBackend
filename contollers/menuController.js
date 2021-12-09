@@ -1,9 +1,8 @@
 const {Menu,Bussiness,License}=require('../models')
-const {textEdit}=require("../utils/textEdit")
+const {textEdit,textEditSimple}=require("../utils/textEdit")
 const randomstring = require("randomstring")
 const fs=require("fs")
 const sharp=require("sharp")
-
 exports.addSettings=async(req,res,next)=>{
     try {
         await Menu.create({body:{en:[""],ru:[""],tm:[""],},header:{en:[""],ru:[""],tm:[""]}})//consultation
@@ -49,6 +48,19 @@ exports.editStatistika=async(req,res,next)=>{
     return res.status(400).send("something went wrong")
   }
 }
+exports.addOne=async(req,res,next)=>{
+  try {
+    let statistika = await Menu.findOne({where:{id:4}})
+    statistika.body.today+=1
+    statistika.body.week+=1
+    statistika.body.month+=1
+    await Menu.update({body:statistika.body},{where:{id:4}})
+    return res.status(200).send({status:200})
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
+}
 exports.getMembership=async(req,res,next)=>{
   try {
     let about=await Menu.findOne({where:{id:2}})
@@ -60,16 +72,16 @@ exports.getMembership=async(req,res,next)=>{
 }
 exports.editMembership=async(req,res,next)=>{
   let body={
-      tm:req.body.text,
-      ru:req.body.text2,
-      en:req.body.text3
+      tm:textEdit(req.body.text),
+      ru:textEdit(req.body.text2),
+      en:textEdit(req.body.text3)
   }
   let header={
       tm:req.body.tmheader,
       ru:req.body.ruheader,
       en:req.body.enheader
   } 
-  console.log(body)
+
   try {
       await Menu.update({body:body,header:header,},{where:{"id":2}})
       return res.status(200).send({id:2})
@@ -107,9 +119,9 @@ exports.editConsultation=async(req,res,next)=>{
     return res.status(400).send({message:"something went wrong"})
   }
     let header={
-        tm:textEdit(req.body.tmheader),
-        ru:textEdit(req.body.ruheader),
-        en:textEdit(req.body.enheader)
+        tm:req.body.tmheader,
+        ru:req.body.ruheader,
+        en:req.body.enheader
     }
     let body={
         tm:textEdit(req.body.text),
@@ -161,9 +173,9 @@ exports.editAboutUs=async(req,res,next)=>{
     return res.status(400).send({message:"something went wrong"})
   }
   let header={
-    tm:textEdit(req.body.tmheader),
-    ru:textEdit(req.body.ruheader),
-    en:textEdit(req.body.enheader)
+    tm:req.body.tmheader,
+    ru:req.body.ruheader,
+    en:req.body.enheader
 }
 let body={
     tm:textEdit(req.body.text),
@@ -268,9 +280,9 @@ exports.addBussiness=async(req,res,next)=>{
     en:req.body.enheader
   }
   let body={
-    tm:req.body.text,
-    ru:req.body.text2,
-    en:req.body.text3
+    tm:textEdit(req.body.text),
+    ru:textEdit(req.body.text2),
+    en:textEdit(req.body.text3)
   }
   try {
     let bussiness=await Bussiness.create({header:header, body:body})
@@ -289,9 +301,9 @@ exports.editBussiness=async(req,res,next)=>{
     en:req.body.enheader
   }
   let body={
-    tm:req.body.text,
-    ru:req.body.text2,
-    en:req.body.text3
+    tm:textEdit(req.body.text),
+    ru:textEdit(req.body.text2),
+    en:textEdit(req.body.text3)
   }
   try {
     await Bussiness.update({header:header, body:body},{where: {id:id}})
@@ -393,9 +405,9 @@ exports.addLicense=async(req,res,next)=>{
     en:req.body.enheader
   }
   let body={
-    tm:req.body.text,
-    ru:req.body.text2,
-    en:req.body.text3
+    tm:textEdit(req.body.text),
+    ru:textEdit(req.body.text2),
+    en:textEdit(req.body.text3)
   }
   try {
     let license=await License.create({header:header, body:body})
@@ -414,9 +426,9 @@ exports.editLicense=async(req,res,next)=>{
     en:req.body.enheader
   }
   let body={
-    tm:req.body.text,
-    ru:req.body.text2,
-    en:req.body.text3
+    tm:textEdit(req.body.text),
+    ru:textEdit(req.body.text2),
+    en:textEdit(req.body.text3)
   }
   try {
     await License.update({header:header, body:body},{where: {id:id}})

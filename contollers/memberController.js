@@ -3,7 +3,7 @@ const sharp=require("sharp")
 const fs=require("fs")
 const rimraf=require("rimraf")
 const randomstring=require("randomstring")
-
+const {textEditSimple}=require("../utils/textEdit")
 exports.allMembers=async(req,res,next)=>{
     try {
         let members=await Member.findAll({order: [["id","DESC"]]})
@@ -51,9 +51,9 @@ exports.addMember=async(req,res,next)=>{
         en:req.body.enAddress
     }
     let body={
-        tm:req.body.text,
-        ru:req.body.text2,
-        en:req.body.text3
+        tm:textEditSimple(req.body.text),
+        ru:textEditSimple(req.body.text2),
+        en:textEditSimple(req.body.text3)
     }
     let extra=req.body.extra
     let welayat=req.body.welayat
@@ -90,12 +90,12 @@ exports.editMember = async(req, res,next) => {
     let id=req.query.id
     let name=req.body.name
     let link=req.body.web
-    let member=req.body.membership
+    let member=req.body.member
     let email=req.body.email
     let body={
-        tm:req.body.text,
-        ru:req.body.text2,
-        en:req.body.text3
+        tm:textEditSimple(req.body.text),
+        ru:textEditSimple(req.body.text2),
+        en:textEditSimple(req.body.text3)
     }
     let extra=req.body.extra
     let welayat=req.body.welayat
@@ -163,7 +163,6 @@ exports.addFile=async(req,res,next)=>{
       return res.status(400).send("something went wrong")
     }
     let pic=Object.values(req.files)
-    console.log(Math.round((pic[0].size)/1024))
     if(typeof(filename)=="string"){allfiles.push(filename)}
     for(let i=0;i<pic.length;i++){
           filename=pic[i].name
@@ -190,7 +189,7 @@ exports.deleteFile=async(req,res,next)=>{
         let file=await Member.findOne({where: {id:id}})
         allFiles=file.files
         let filename=allFiles.splice(index,1)
-        fs.unlink("./public/members/"+id+"/docs/"+filename)
+        fs.unlink("./public/members/"+id+"/docs/"+filename[0].filename,(err)=>{if(err){console.log(err)}})
         await Member.update({files:allFiles},{where:{"id":id}})
         return res.status(200).send("sucess")
     } catch (err) {

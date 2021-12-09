@@ -1,11 +1,10 @@
 const {sequelize}=require("./models")
 const express=require("express")
 const fileupload=require("express-fileupload")
+const{Menu}=require("./models")
+const schedule = require('node-schedule');
 const app=express()
-const http=require("http")
-const fs=require("fs")
 app.use(express.json())
-const{dayControl}=require("./utils/dayControl")
 app.use(express.urlencoded({extended:true}))
 app.use(fileupload())
 const cors=require("cors")
@@ -14,16 +13,29 @@ app.use(cors({
     credentials:true,
     
 }))
-// http.get("http://localhost:5000/banners/2L9CECF.png",(res)=>{
-//     let filename=fs.createWriteStream("./public/test.png")
-//     res.pipe(filename)
-//     filename.on("finish",()=>{
-//         console.log("done")
-//         filename.close()
-//     })
-// })
 
-app.use(dayControl)
+    const day = schedule.scheduleJob('0 0 0 * * *',async ()=>{
+        let statistika=await Menu.findOne({where: {id:4}})
+        console.log(statistika.body)
+        statistika.body.today=0
+        console.log(statistika.body)
+        await Menu.update({body:statistika.body},{where: {id:4}})
+        console.log('gunligi pozya');
+    });
+    const month = schedule.scheduleJob('0 0 0 1 * *',async function(){
+        let statistika=await Menu.findOne({where: {id:4}})
+        console.log(statistika.body)
+        statistika.body.month=0
+        await Menu.update({body:statistika.body},{where: {id:4}})
+      console.log('ayy pozya');
+    });
+    const week = schedule.scheduleJob('0 0 0 * * 1',async function(){
+        let statistika=await Menu.findOne({where: {id:4}})
+        console.log(statistika.body)
+        statistika.body.week=0
+        await Menu.update({body:statistika.body},{where: {id:4}})
+        console.log('hepdani pozya');
+      });
 app.use(express.static("./public"))
 app.use(require("morgan")("dev"))
 app.use("/",require("./routes/main"))

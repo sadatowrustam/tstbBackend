@@ -1,4 +1,5 @@
 const {Constructor,Constructorcategory}=require("../models")
+const {textEdit}=require("../utils/textEdit")
 const randomstring = require("randomstring")
 const fs=require("fs")
 const sharp= require("sharp")
@@ -87,9 +88,9 @@ exports.addSubcategory=async(req,res,next)=>{
         EN:req.body.en
     }
     let body={
-        TM:req.body.text,
-        RU:req.body.text2,
-        EN:req.body.text3
+        TM:textEdit(req.body.text),
+        RU:textEdit(req.body.text2),
+        EN:textEdit(req.body.text3)
     }
     let header={
         TM:req.body.tmheader,
@@ -147,9 +148,9 @@ exports.editSubcategory=async(req,res,next) => {
         EN:req.body.en
     }
     let body={
-        TM:req.body.text,
-        RU:req.body.text2,
-        EN:req.body.text3
+        TM:textEdit(req.body.text),
+        RU:textEdit(req.body.text2),
+        EN:textEdit(req.body.text3)
     }
     let header={
         TM:req.body.tmheader,
