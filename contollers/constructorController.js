@@ -88,9 +88,9 @@ exports.addSubcategory=async(req,res,next)=>{
         EN:req.body.en
     }
     let body={
-        TM:textEdit(req.body.text),
-        RU:textEdit(req.body.text2),
-        EN:textEdit(req.body.text3)
+        TM:req.body.text,
+        RU:req.body.text2,
+        EN:req.body.text3
     }
     let header={
         TM:req.body.tmheader,
@@ -148,9 +148,9 @@ exports.editSubcategory=async(req,res,next) => {
         EN:req.body.en
     }
     let body={
-        TM:textEdit(req.body.text),
-        RU:textEdit(req.body.text2),
-        EN:textEdit(req.body.text3)
+        TM:req.body.text,
+        RU:req.body.text2,
+        EN:req.body.text3
     }
     let header={
         TM:req.body.tmheader,

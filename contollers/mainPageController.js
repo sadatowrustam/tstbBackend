@@ -83,8 +83,8 @@ try {
 }
 try{
   let province=await Province.findOne({
-    attributes:["id","place"]
-  })
+    attributes:["id","place"],where:{id:1}}
+  )
   obj.location=province
 }catch(err){
   console.log(err)

@@ -132,8 +132,10 @@ exports.editProvince=async(req,res,next)=>{
         phone:req.body.ahal.phone
     }
     place.ahal=little
+
+
     try{
-        let province=await Province.update({place},{where:{id:1}})
+        let province=await Province.update({place:place},{where:{id:1}})
         return res.send({status:200})
     }catch(err){
         console.log(err)

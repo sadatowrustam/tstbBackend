@@ -11,9 +11,7 @@ const cors=require("cors")
 app.use(cors({
     origin:"*",
     credentials:true,
-    
 }))
-
     const day = schedule.scheduleJob('0 0 0 * * *',async ()=>{
         let statistika=await Menu.findOne({where: {id:4}})
         console.log(statistika.body)

@@ -72,9 +72,9 @@ exports.getMembership=async(req,res,next)=>{
 }
 exports.editMembership=async(req,res,next)=>{
   let body={
-      tm:textEdit(req.body.text),
-      ru:textEdit(req.body.text2),
-      en:textEdit(req.body.text3)
+      tm:req.body.text,
+      ru:req.body.text2,
+      en:req.body.text3
   }
   let header={
       tm:req.body.tmheader,
@@ -124,9 +124,9 @@ exports.editConsultation=async(req,res,next)=>{
         en:req.body.enheader
     }
     let body={
-        tm:textEdit(req.body.text),
-        ru:textEdit(req.body.text2),
-        en:textEdit(req.body.text3)
+        tm:req.body.text,
+        ru:req.body.text2,
+        en:req.body.text3
     }
     let bosh=req.body.bosh
   if(bosh[0]!=undefined){
@@ -178,9 +178,9 @@ exports.editAboutUs=async(req,res,next)=>{
     en:req.body.enheader
 }
 let body={
-    tm:textEdit(req.body.text),
-    ru:textEdit(req.body.text2),
-    en:textEdit(req.body.text3)
+    tm:req.body.text,
+    ru:req.body.text2,
+    en:req.body.text3
 }
 let bosh=req.body.bosh
 if(bosh[0]!=undefined){
@@ -280,9 +280,9 @@ exports.addBussiness=async(req,res,next)=>{
     en:req.body.enheader
   }
   let body={
-    tm:textEdit(req.body.text),
-    ru:textEdit(req.body.text2),
-    en:textEdit(req.body.text3)
+    tm:req.body.text,
+    ru:req.body.text2,
+    en:req.body.text3
   }
   try {
     let bussiness=await Bussiness.create({header:header, body:body})
@@ -301,9 +301,9 @@ exports.editBussiness=async(req,res,next)=>{
     en:req.body.enheader
   }
   let body={
-    tm:textEdit(req.body.text),
-    ru:textEdit(req.body.text2),
-    en:textEdit(req.body.text3)
+    tm:req.body.text,
+    ru:req.body.text2,
+    en:req.body.text3
   }
   try {
     await Bussiness.update({header:header, body:body},{where: {id:id}})
@@ -405,9 +405,9 @@ exports.addLicense=async(req,res,next)=>{
     en:req.body.enheader
   }
   let body={
-    tm:textEdit(req.body.text),
-    ru:textEdit(req.body.text2),
-    en:textEdit(req.body.text3)
+    tm:req.body.text,
+    ru:req.body.text2,
+    en:req.body.text3
   }
   try {
     let license=await License.create({header:header, body:body})
@@ -426,9 +426,9 @@ exports.editLicense=async(req,res,next)=>{
     en:req.body.enheader
   }
   let body={
-    tm:textEdit(req.body.text),
-    ru:textEdit(req.body.text2),
-    en:textEdit(req.body.text3)
+    tm:req.body.text,
+    ru:req.body.text2,
+    en:req.body.text3
   }
   try {
     await License.update({header:header, body:body},{where: {id:id}})

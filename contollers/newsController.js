@@ -29,9 +29,9 @@ exports.addTags=async(req,res,next)=>{
 }
 exports.addNews=async (req,res,next)=>{
   let body={
-    TM:textEditSimple(req.body.text),
-    RU:textEditSimple(req.body.text2), 
-    EN:textEditSimple(req.body.text3)
+    TM:req.body.text,
+    RU:req.body.text2, 
+    EN:req.body.text3
   }
   let tags=req.body.tag
   let header={
@@ -82,9 +82,9 @@ exports.addPicture=async (req,res,next)=>{
 }
 exports.editNews=async(req,res,next)=>{
   let body={
-    TM:textEditSimple(req.body.text),
-    RU:textEditSimple(req.body.text2), 
-    EN:textEditSimple(req.body.text3)
+    TM:req.body.text,
+    RU:req.body.text2, 
+    EN:req.body.text3
   }
   let tags=req.body.tag
   let header={
