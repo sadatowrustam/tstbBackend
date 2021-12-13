@@ -22,15 +22,16 @@ exports.login=async(req,res,next)=>{
     try {
         let admin=await Login.findOne()
         if(admin.name==name){
-            console.log("ady dogry")
+
             bcrypt.compare(password,admin.password,function(err,result){
                 if(result==true){
                     return res.send({status:200})
                 }else{
-                    return res.send({status:"adynyz yada parolynyz yalnysh"})
+                    return res.status(400).send({status:401})
                 }
             })
-        }else{return res.send("adynyz yada parolynyz yalnysh")}
+        }else{
+            return res.status(400).send({status:400})}
     } catch (err) {
         console.log(err)
         return res.status(400).send("error")

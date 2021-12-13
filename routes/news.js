@@ -1,7 +1,7 @@
 
 
 const express=require("express")
-const {getMain,addTags,addNews,editNews,newsByTag,deleteTag,deleteNews,getOneNews,loadMore,getAll,getTags,addPicture,isActiveNews,getOneNewsFront}=require("../contollers/newsController")
+const {getMain,addTags,addNews,editNews,newsByTag,deleteTag,deleteNews,getOneNews,loadMore,getAll,getTags,addPicture,isActiveNews,getOneNewsFront,search}=require("../contollers/newsController")
 const router=express.Router()
 //news
 router.get("/",getMain)
@@ -14,6 +14,7 @@ router.get("/getOneFront",getOneNewsFront)
 router.post("/edit",editNews)
 router.delete("/",deleteNews)
 router.post("/isActiveNews",isActiveNews)
+router.get("/search",search)
 //tags
 router.get("/tag",getTags)
 router.get("/tags",newsByTag)

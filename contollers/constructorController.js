@@ -1,4 +1,5 @@
 const {Constructor,Constructorcategory}=require("../models")
+const {sequelize}=require("sequelize");
 const {textEdit}=require("../utils/textEdit")
 const randomstring = require("randomstring")
 const fs=require("fs")
@@ -29,7 +30,7 @@ exports.allConstructors=async(req,res,next)=>{
 }
 exports.allConstructorsPro=async(req,res,next)=>{
     try {
-        let constructor=await Constructorcategory.findAll({order: [["id","DESC"]],include:{association:"constructors",attributes:["id","name"]}})
+        let constructor=await Constructorcategory.findAll({order: [["id","ASC"]],include:{association:"constructors",attributes:["id","name"]}})
         return res.send(constructor)
     } catch (err) {
         console.log(err)
@@ -39,7 +40,13 @@ exports.allConstructorsPro=async(req,res,next)=>{
 exports.getOneConstructor=async(req,res,next)=>{
     let id=req.query.id
     try {
-        let constructor=await Constructorcategory.findOne({where:{"id":id},include:["constructors"]})
+        let constructor=await Constructorcategory.findOne({where:{"id":id},
+        include:[{
+            model:Constructor,
+            as:"constructors",
+            order:[[Constructor,"id","DESC"]]
+        },
+        ]})
         return res.send(constructor)
     } catch (err) {
         console.log(err)

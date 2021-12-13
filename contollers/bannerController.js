@@ -32,10 +32,16 @@ exports.uploadPic=async(req,res,next)=>{
         console.log(err)
         return res.status(400).send("something went wrong")
     }
-    let filename=randomstring.generate(7)+".webp"
-    let buffer=await sharp(file.data).webp({quality:90}).resize(1100,234).toBuffer()
-    await sharp(buffer).resize(1100,234).toFile("./public/banners/"+filename)
-    console.log("dyndy")
+    let filename
+    console.log(file.mimetype=="image/gif")
+    if(file.mimetype=="image/gif"){
+        filename=randomstring.generate(7)+".gif"
+        file.mv("./public/banners/"+filename,(err)=>{if(err){console.log(err)}})
+    }else{
+        filename=randomstring.generate(7)+".webp"
+        let buffer=await sharp(file.data).webp({quality:90}).resize(1100,234).toBuffer()
+        await sharp(buffer).resize(1100,234).toFile("./public/banners/"+filename)
+    }
     allBanners[index].pic=filename
     try {
         await Banners.update({banner:allBanners},{where:{"id":id}})

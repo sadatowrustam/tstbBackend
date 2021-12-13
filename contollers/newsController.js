@@ -1,6 +1,7 @@
 const {Op}=require("sequelize")
 const sharp = require("sharp");
 const {textEditSimple}=require("../utils/textEdit")
+const sanitizeHtml=require("sanitize-html")
 const fs=require("fs");
 const randomstring=require("randomstring");
 const {News,News_tags,Banners,Events}=require("../models/");
@@ -289,6 +290,75 @@ exports.isActiveNews=async (req,res,next)=>{
     return res.status(400).send("Something went wrong")
   }
   
+}
+exports.search=async(req,res,next)=>{
+  let text=req.query.text
+  let obj={
+    result:[]
+  }
+  let search
+  let id=0
+  let soz
+  try {
+    search=await News.findAll();
+  }catch (error) {
+    console.log(error)
+    return res.status(400).send("something went wrong")
+  }
+  //tazelikleri gozleya
+  for(let i=0; i<search.length; i++) {
+    let texts=Object.values(search[i].body)
+    for (let j=0;j<3;j++){
+      let dirty=texts[j]
+      let cleanText = dirty.replace(/<\/?[^>]+(>|$)/g, "")
+        if(cleanText.includes(text)&& search[i].id!=id){
+            id=search[i].id
+            let index=cleanText.indexOf(text)
+            if(index<50){
+                soz=cleanText.slice(0,index+50)
+            }else{
+                soz=cleanText.slice(index-50,index+50)
+            }
+            let oneNews={
+              soz:soz,
+              id:id,
+              category:"news"
+            }
+          obj.result.push(oneNews);
+        }
+    }
+    
+}
+try {
+  search=await Events.findAll();
+}catch (error) {
+  console.log(error)
+  return res.status(400).send("something went wrong")
+}
+for(let i=0; i<search.length; i++) {
+  let texts=Object.values(search[i].body)
+  for (let j=0;j<3;j++){
+    let dirty=texts[j]
+    let cleanText = dirty.replace(/<\/?[^>]+(>|$)/g, "")
+      if(cleanText.includes(text)&& search[i].id!=id){
+          id=search[i].id
+          let index=cleanText.indexOf(text)
+          if(index<50){
+              soz=cleanText.slice(0,index+50)
+          }else{
+              soz=cleanText.slice(index-50,index+50)
+          }
+          let oneNews={
+            soz:soz,
+            id:id,
+            category:"events"
+          }
+        obj.result.push(oneNews);
+      }
+  }
+  
+}
+  return res.send(obj.result);
 }
 // exports.getOneTag=async(req,res,next)=>{
 //   let uuid=req.query.uuid
