@@ -14,6 +14,12 @@ module.exports = {
       user: {
         type: DataTypes.STRING
       },
+      isRead:{
+        type: DataTypes.STRING
+      },
+      lastId:{
+        type:DataTypes.STRING
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE

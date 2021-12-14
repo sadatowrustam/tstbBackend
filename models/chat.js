@@ -15,7 +15,9 @@ module.exports = (sequelize, DataTypes) => {
   };
   Chat.init({
     chat: DataTypes.JSONB,
-    user: DataTypes.STRING
+    user: DataTypes.STRING,
+    isRead:DataTypes.STRING,
+    lastId:DataTypes.STRING,
   }, {
     sequelize,
     tableName:"chats",
