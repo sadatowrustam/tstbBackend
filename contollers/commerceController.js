@@ -3,6 +3,7 @@ const fs=require("fs")
 const sharp = require("sharp")
 const rimraf = require("rimraf")
 const randomstring = require("randomstring")
+const {searchFromCommerce}=require("../utils/searchFrom")
 exports.getMain=async(req,res,next)=>{
     let welayat=shBarla(req.query.welayat)
     try {
@@ -194,6 +195,18 @@ exports.deleteCategory =async(req,res,next)=>{
         console.log(err)
         return res.send(500).send("something went wrong")
     }
+}
+exports.search=async(req,res,next)=>{
+    let search 
+    let text=req.query.text
+    try {
+        search=await Commerce.findAll({order:[["id","DESC"]]})
+    }catch (err) {
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
+    let result=searchFromCommerce(search,text)
+    return res.send(result)
 }
 function shBarla(welayat){
     let newwelayat=""

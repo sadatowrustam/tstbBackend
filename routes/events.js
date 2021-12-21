@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const {getMain,addEvent,deleteEvent,getOneEvent,editEvent,loadMore,getAll,getTags,addPicture,isActiveEvent,getOneEventFront}=require("../contollers/eventController")
+const {getMain,addEvent,deleteEvent,getOneEvent,editEvent,loadMore,getAll,getTags,addPicture,isActiveEvent,getOneEventFront,search}=require("../contollers/eventController")
 router.get("/",getMain)
 router.get("/getAll",getAll)
 router.post("/addEvent",addEvent)
@@ -12,4 +12,5 @@ router.get("/loadMore",loadMore)
 router.post("/isActiveEvents",isActiveEvent)
 router.delete("/",deleteEvent)
 router.get("/tag",getTags)
+router.get("/searchAdmin",search)
 module.exports=router

@@ -3,7 +3,7 @@ const sharp=require("sharp")
 const fs=require("fs")
 const rimraf=require("rimraf")
 const randomstring=require("randomstring")
-const {textEditSimple}=require("../utils/textEdit")
+const {searchFromMembers}=require("../utils/searchFrom")
 exports.allMembers=async(req,res,next)=>{
     try {
         let members=await Member.findAll({order: [["id","DESC"]]})
@@ -130,15 +130,17 @@ exports.addPic=async(req,res,next)=>{
   let id=req.query.id
   let filename
   let name
+  let picture=await Member.findOne({where:{id}})
+  filename1=picture.pic
     let pic=req.files.pic0
     filename=pic.name.split(".")[0]+".webp"
-    let buffer=await sharp(pic.data).webp({quality:90}).resize(64,64).toBuffer()
-    await sharp(buffer).toFile("./public/members/"+id+"/"+filename)
-    try {
-        await Member.update({pic:filename},{where:{id:id}})
+    let buffer=await sharp(pic.data).webp().resize(64,64).toBuffer()
     if(filename1!=undefined){
       fs.unlink("./public/members/"+id+"/"+filename1,(err)=>{if(err){console.log(err)}})
     }
+    await sharp(buffer).toFile("./public/members/"+id+"/"+filename)
+    try {
+        await Member.update({pic:filename},{where:{id:id}})
     return res.status(200).json({status:"success"})
   }catch (err) {
     console.log(err)
@@ -169,7 +171,7 @@ exports.addFile=async(req,res,next)=>{
           await pic[i].mv("./public/members/"+id+"/docs/"+filename,(err)=>{if(err){console.log(err)}})
           let obj={
               filename:filename,
-              size:Math.round(pic[i].size/1024)
+              size:size(pic[i].size)
           }
           allfiles.push(obj)
       }
@@ -197,4 +199,31 @@ exports.deleteFile=async(req,res,next)=>{
         return res.status(400).send("something went wrong")
     }
 
+}
+exports.search=async(req,res,next)=>{
+    let search
+    let text=req.query.text
+    try {
+        search=await Member.findAll({order: [["id","DESC"]]})
+    }catch(err){
+        console.log(err)
+        return res.status(500).send("something went wrong")
+    }
+    let result=searchFromMembers(search,text)
+    console.log(result)
+    return res.send(result)
+}
+function size(file){
+
+    let size = 0
+    let status
+    size=Math.round(file/1024)
+    status="Kb"
+    if(size>1024){
+      size=size/1024
+      size=size.toFixed(2)
+      status="Mb"
+    }
+    console.log(size+status)
+    return size+status
 }

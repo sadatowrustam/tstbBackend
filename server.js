@@ -48,7 +48,7 @@ app.use("/industry",require("./routes/industry"))
 app.use("/commerce",require("./routes/commerce"))//dyndyk
 app.use("/constructor",require("./routes/constructor"))
 app.use("/mail",require("./routes/mail"))//dyndyk
-// app.use("/chat",require("./routes/chat"))
+app.use("/chat",require("./routes/chat"))
 app.use("/menu",require("./routes/menu"))//dyndyk
 app.use("/login",require("./routes/login"))
 app.listen("5000",async function(){

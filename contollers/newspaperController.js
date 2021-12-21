@@ -2,6 +2,7 @@ const {Newspaper}=require("../models")
 const fs=require("fs")
 const randomstring = require("randomstring")
 const sharp=require("sharp")
+const {searchFromNewspaper}=require("../utils/searchFrom")
 exports.getAllNewspapers=async(req,res,next)=>{
     try{
         let newspaper=await Newspaper.findAll({order:[["id","DESC"]]})
@@ -148,5 +149,17 @@ exports.downloadFile=async(req,res,next)=>{
           }
         );
 
+}
+exports.search=async(req,res)=>{
+    let search 
+    let text=req.query.text
+    try{
+        search=await Newspaper.findAll({order:[["id","DESC"]]})
+    }catch(err){
+        console.log(err)
+        return res.json({"err":"something went wrong"})
+    }
+    let result=searchFromNewspaper(search,text)
+    return res.send(result)
 }
 

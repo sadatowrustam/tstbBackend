@@ -23,6 +23,9 @@ module.exports = {
       pic:{
         type:DataTypes.ARRAY(DataTypes.STRING)
       },
+      files:{
+        type:DataTypes.JSONB
+      },
       constructorId:{
         type: DataTypes.INTEGER
       },

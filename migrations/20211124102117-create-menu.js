@@ -17,6 +17,9 @@ module.exports = {
       pic:{
         type:DataTypes.ARRAY(DataTypes.STRING)
       },
+      files:{
+        type:DataTypes.JSONB
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE

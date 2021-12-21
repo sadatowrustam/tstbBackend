@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   Menu.init({
     body: DataTypes.JSONB,
     header: DataTypes.JSONB,
-    pic:DataTypes.ARRAY(DataTypes.STRING)
+    pic:DataTypes.ARRAY(DataTypes.STRING),
+    files: DataTypes.JSONB
   }, {
     sequelize,
     tableName:"menu",

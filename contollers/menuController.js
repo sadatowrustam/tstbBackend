@@ -1,5 +1,5 @@
 const {Menu,Bussiness,License}=require('../models')
-const {textEdit,textEditSimple}=require("../utils/textEdit")
+const {searchFromBussiness}=require("../utils/searchFrom")
 const randomstring = require("randomstring")
 const fs=require("fs")
 const sharp=require("sharp")
@@ -88,6 +88,52 @@ exports.editMembership=async(req,res,next)=>{
   } catch (err) {
       console.log(err)
       return res.status(400).send({message:err.message})   
+  }
+}
+exports.addMembershipFile=async(req,res,next)=>{
+  let allfiles=[]
+  try {
+    let license=await Menu.findOne({where:{id:2}})
+    if(license.files!=undefined){
+      allfiles=license.files
+    }
+  } catch (err) {
+      console.log(err)
+      return res.status(400).send({message:"something went wrong"})
+  }
+  let pic=Object.values(req.files)
+  for(let i=0;i<pic.length;i++){
+    console.log(i)
+        filename=pic[i].name
+        await pic[i].mv("./public/menu/"+filename,(err)=>{if(err){console.log(err)}})
+        let obj={
+            filename:filename,
+            size:size(pic[i].size)
+        }
+        allfiles.push(obj)
+    }
+
+  try {
+    await Menu.update({files:allfiles},{where:{id:2}})
+    return res.status(200).json({status:"success"})
+  }catch (err) {
+    console.log(err)
+    return res.status(400).json({err:"something went wrong"})
+  }
+}
+exports.deleteMembershipFile=async(req,res,next)=>{
+  let index=req.query.index
+  let allfiles
+  try {
+    let files=await Menu.findOne({where:{id:2}})
+    fs.unlink("./public/menu/"+files.files[index].filename,(err)=>{if(err){console.log(err)}})
+    files.files.splice(index,1)
+    allfiles=files.files
+    await Menu.update({files:allfiles},{where:{id:2}})
+    return res.status(200).send({status:200})
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("somthing went wrong")
   }
 }
 exports.getConsultation=async(req,res,next) => {
@@ -370,6 +416,18 @@ exports.deleteBussinessFile=async(req,res,next)=>{
     return res.status(400).send("somthing went wrong")
   }
 }
+exports.searchBussiness=async(req,res)=>{
+  let search
+  let text=req.query.text
+  try {
+    search=await Bussiness.findAll({order: [["id","DESC"]]})
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
+  let result =searchFromBussiness(search,text)
+  return res.send(result)
+}
 exports.getAllLicense=async(req,res,next)=>{
   try {
     let license=await License.findAll({order: [["id","DESC"]]})
@@ -497,6 +555,18 @@ exports.deleteLicenseFile=async(req,res,next)=>{
     console.log(err)
     return res.status(400).send("somthing went wrong")
   }
+}
+exports.searchLicense=async(req,res,next)=>{
+  let search
+  let text=req.query.text
+  try {
+    search=await License.findAll({order: [["id","DESC"]]})
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
+  let result =searchFromBussiness(search,text)
+  return res.send(result)
 }
 function size(file){
   let size = 0

@@ -1,10 +1,11 @@
 const {Constructor,Constructorcategory}=require("../models")
 const {sequelize}=require("sequelize");
-const {textEdit}=require("../utils/textEdit")
+const {searchFromConstructor}=require("../utils/searchFrom")
 const randomstring = require("randomstring")
 const fs=require("fs")
 const sharp= require("sharp")
 const rimraf=require("rimraf")
+let searchId
 exports.addConstructor=async(req,res,next)=>{
     let name={
         TM:req.body.tm,
@@ -39,6 +40,7 @@ exports.allConstructorsPro=async(req,res,next)=>{
 }
 exports.getOneConstructor=async(req,res,next)=>{
     let id=req.query.id
+    searchId=id
     try {
         let constructor=await Constructorcategory.findOne({where:{"id":id},
         include:[{
@@ -121,14 +123,14 @@ exports.getOneSubcategory=async(req,res,next)=>{
     let id=req.query.id
     try {
         let category = await Constructor.findOne({where:{id:id},include:"banner"})
-        if(category.pic!=null){
-            category.pic.forEach((e,i)=>{
-            if(e==" "){category.pic.splice(i,1);boshmy=true}
-        })
-        if(boshmy){await Constructor.update({pic:category.pic},{where:{id:id}})
-        category = await Constructor.findOne({where:{id:id}})
-    }
-}
+        // if(category.pic!=null){
+        //     category.pic.forEach((e,i)=>{
+        //     if(e==" "){category.pic.splice(i,1);boshmy=true}
+        // })
+        // if(boshmy){await Constructor.update({pic:category.pic},{where:{id:id}})
+        // category = await Constructor.findOne({where:{id:id}})
+    // }
+// }
     return res.send(category)
 }  
     catch (err) {
@@ -228,11 +230,6 @@ exports.addPic=async(req,res,next)=>{
     newfiles.push(filename)
     }   
     let uzynlyk=newfiles.length+allfiles.length
-    console.log(allfiles.length,newfiles.length)
-    // if(allfiles.length==0 || allfiles.length==undefined){uzynlyk=1}else{uzynlyk=allfiles.length}
-    // if(allfiles.length!=0 &&allfiles.length<newfiles.length){console.log(156);uzynlyk=pic.length}
-    console.log(uzynlyk)
-    console.log(allfiles,newfiles)
     for (let j=0; j<=uzynlyk; j++){
       let x="pic"+j
       if(pic1[x]!=undefined && allfiles[j]!=undefined){
@@ -244,7 +241,6 @@ exports.addPic=async(req,res,next)=>{
         for (let k=j;k>0;k--){if(allfiles[k]!=" "){allfiles.splice(k,1,newfiles[sana]);sana+=1;break}}
       }
 }
-
     try {
         await Constructor.update({pic:allfiles},{where:{id:id}})
         return res.status(200).json({status:200})
@@ -299,5 +295,130 @@ exports.addVideo=async(req,res,next)=>{
         console.log(err)
         return res.status(400).json({status:"Something went wrong"})
     }
+}
+exports.addFile=async(req,res,next)=>{
+    let id=req.query.id
+    let allfiles=[]
+    try {
+      let constructor=await Constructor.findOne({where:{id:id}})
+      if(constructor.files!=undefined){
+        allfiles=constructor.files
+      }
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send({message:"something went wrong"})
+    }
+    let pic=Object.values(req.files)
+    for(let i=0;i<pic.length;i++){
+          filename=pic[i].name
+          await pic[i].mv(`./public/constructor/${id}/`+filename,(err)=>{if(err){console.log(err)}})
+          let obj={
+              filename:filename,
+              size:size(pic[i].size)
+          }
+          allfiles.push(obj)
+      }
+    try {
+      await Constructor.update({files:allfiles},{where:{id:id}})
+      return res.status(200).json({status:200})
+    }catch (err) {
+      console.log(err)
+      return res.status(400).json({err:"something went wrong"})
+    }
+}
+exports.deleteFile=async(req,res,next)=>{
+    let id=req.query.id
+    let index = req.query.index
+    let allFiles=[]
+    try {
+        let file=await Constructor.findOne({where: {id:id}})
+        allFiles=file.files
+        let filename=allFiles.splice(index,1)
+        fs.unlink("./public/constructor/"+id+"/"+filename[0].filename,(err)=>{if(err){console.log(err)}})
+        await Constructor.update({files:allFiles},{where:{"id":id}})
+        return res.status(200).send({status:200})
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
+}
+exports.search=async(req,res,next)=>{
+    let text=req.query.text
+    let search
+    let id=req.query.id
+    try {
+        search=await Constructorcategory.findOne({where:{id:searchId},include:["constructors"]});
+    }catch (error) {
+        console.log(error)
+        return res.status(400).send("something went wrong")
+  }
+  let result=searchFromConstructor(search.constructors,text)
+  return res.send(result)
+}
+exports.addTestPic=async(req,res,next)=>{
+    let id=req.query.id
+    let dbPics=[]
+    try {
+        let picture = await Constructor.findOne({where:{id:id}})
+        if(picture.pic!=null){
+
+            dbPics=dbPics.pic
+        }
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send("something went wrong")
+    }
+    let allpics=req.files
+    let picArray=Object.values(allpics)
+    let uzynlyk=picArray.length+dbPics.length
+    for (let i=0;i<uzynlyk;i++){
+        console.log(dbPics[i])
+        let x="pic"+i
+        if(allpics[x]!=undefined && dbPics[i]!=undefined){
+            console.log(316)
+            let oneCollection=Object.values(picArray[i])
+            let miniArray=[]
+            for (let j=0;j<oneCollection.length;j++){
+                let buffer=await sharp(oneCollection[j].data).webp().resize(1100,234).toBuffer()
+                let filename=oneCollection[j].name.split(".")[0]+".webp"
+                await sharp(buffer).toFile(`./public/constructor/${id}/${filename}`)
+                miniArray.push(filename)
+            }
+            dbPics[i].push(miniArray)
+        }else if(allpics[x]!=undefined && dbPics[i]==undefined) {
+            console.log(327)
+            let oneCollection=Object.values(picArray[i])
+            let miniArray=[]
+            for (let j=0;j<oneCollection.length;j++){
+                let oneFile=oneCollection[j]
+                let buffer=await sharp(oneFile.data).webp().resize(1100,234).toBuffer()
+                let filename=oneFile.name.split(".")[0]+".webp"
+                await sharp(buffer).toFile(`./public/constructor/${id}/${filename}`)
+                miniArray.push(filename)
+            }
+            dbPics.push(miniArray)
+        }
+    }
+    console.log(341,dbPics)
+    // try {
+    //     await Constructor.update({pic:dbPics},{where:{id}})
+    //     return res.status(200).send({status:200})
+    // } catch (err) {
+    //     console.log(err)
+    //     return res.status(400).send("something went wrong")
+    // }
+    
+}
+function size(file){
+    let size = 0
+    let status
+    size=Math.round(file/1024)
+    status="Kb"
+    if(size>1024){
+      size=size/1024
+      size=size.toFixed(2)
+      status="Mb"
+    }
+    return size+status
 }
 

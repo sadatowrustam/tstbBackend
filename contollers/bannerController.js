@@ -2,6 +2,7 @@ const {Banners}=require("../models")
 const sharp=require("sharp")
 const randomstring=require("randomstring")
 const fs=require("fs")
+const {searchFromBanner}=require("../utils/searchFrom")
 exports.allBanners=async(req,res,next)=>{
     try{
         let banners=await Banners.findAll({
@@ -51,7 +52,6 @@ exports.uploadPic=async(req,res,next)=>{
         return res.status(400).send("something went wrong")
     }
 }
-
 exports.addBannersSettings=async(req,res,next)=>{
     try{
         await Banners.create()
@@ -183,3 +183,18 @@ exports.isActiveBanners=async(req,res,next)=>{
         return res.status(400).send("something went wrong")
     }
 }
+// exports.search=async(req,res,next)=>{
+//     let id=req.query.id
+//     let search
+//     let text=req.query.text
+//     console.log(id)
+//     try {
+//         search=await Banners.findOne({where:{id:id}})
+//     } catch (err) {
+//         console.log(err)
+//         return res.status(400).send("something went wrong")
+
+//     }
+//     let result = searchFromBanner(search,text)
+//     return res.send(result)
+// }

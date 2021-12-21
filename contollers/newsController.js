@@ -1,6 +1,6 @@
 const {Op}=require("sequelize")
 const sharp = require("sharp");
-const {textEditSimple}=require("../utils/textEdit")
+const {searchFromNews}=require("../utils/searchFrom")
 const sanitizeHtml=require("sanitize-html")
 const fs=require("fs");
 const randomstring=require("randomstring");
@@ -324,10 +324,28 @@ exports.search=async(req,res,next)=>{
               id:id,
               category:"news"
             }
+            search.splice(i,1)
+            i-=1
           obj.result.push(oneNews);
         }
     }
-    
+        
+}//tazelik header gozleya
+for (let i = 0; i <search.length;i++){
+  let headers=Object.values(search[i].header)
+      for (let j=0;j<3;j++){
+        let dirty=headers[j]
+        let cleanText = dirty.replace(/<\/?[^>]+(>|$)/g, "")
+          if(cleanText.includes(text)&&search[i].id!=id){
+              id=search[i].id              
+              let oneNews={
+                soz:cleanText,
+                id:id,
+                category:"news"
+              }
+            obj.result.push(oneNews);
+          }
+    }
 }
 try {
   search=await Events.findAll();
@@ -335,6 +353,7 @@ try {
   console.log(error)
   return res.status(400).send("something went wrong")
 }
+//events
 for(let i=0; i<search.length; i++) {
   let texts=Object.values(search[i].body)
   for (let j=0;j<3;j++){
@@ -358,7 +377,34 @@ for(let i=0; i<search.length; i++) {
   }
   
 }
+for (let i = 0; i <search.length;i++){
+  let headers=Object.values(search[i].header)
+      for (let j=0;j<3;j++){
+        let dirty=headers[j]
+        let cleanText = dirty.replace(/<\/?[^>]+(>|$)/g, "")
+          if(cleanText.includes(text)&&search[i].id!=id){
+              id=search[i].id              
+              let oneNews={
+                soz:cleanText,
+                id:id,
+                category:"events"
+              }
+            obj.result.push(oneNews);
+          }
+    }
+}
   return res.send(obj.result);
+}
+exports.searchAdmin=async(req,res,next)=>{
+  let text=req.query.text
+  try {
+    search=await News.findAll();
+  }catch (error) {
+    console.log(error)
+    return res.status(400).send("something went wrong")
+  }
+  let result = searchFromNews(search,text)
+  return res.send(result)
 }
 // exports.getOneTag=async(req,res,next)=>{
 //   let uuid=req.query.uuid

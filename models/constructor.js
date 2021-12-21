@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     header:DataTypes.JSONB,
     body: DataTypes.JSONB,
     pic:DataTypes.ARRAY(DataTypes.STRING),
+    files:DataTypes.JSONB,
     page:DataTypes.STRING,
     constructorId:DataTypes.INTEGER,
     bannerId:DataTypes.INTEGER

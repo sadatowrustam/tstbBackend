@@ -1,7 +1,7 @@
 const {Op}=require("sequelize")
 const sharp = require("sharp");
 const {Events,Banners,News_tags}=require("../models/");
-const{textEditSimple}=require("../utils/textEdit")
+const{searchFromNews}=require("../utils/searchFrom")
 const fs = require("fs")
 const randomstring = require("randomstring")
 exports.getAll=async(req,res,next)=>{
@@ -211,4 +211,16 @@ exports.isActiveEvent=async(req,res,next)=>{
     console.log(err)
     return res.status(400).send("Something went wrong")
   }
+}
+exports.search=async(req,res,next)=>{
+  let search
+  let text=req.query.text
+  try {
+    search=await Events.findAll({order:[["id","DESC"]]})
+  } catch (err) {
+    console.log(err)
+    return res.status(400).send("something went wrong")
+  }
+  let result=searchFromNews(search,text)
+  return res.send(result)
 }

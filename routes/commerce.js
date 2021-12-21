@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const {getMain, addCommerce,getAll,getOne,editCommmerce,deleteCommerce,deletePic,addCategory,getCategory,deleteCategory,getCategorySimple,addPic}=require("../contollers/commerceController")
+const {getMain, addCommerce,getAll,getOne,editCommmerce,deleteCommerce,deletePic,addCategory,getCategory,deleteCategory,getCategorySimple,addPic,search}=require("../contollers/commerceController")
 router.get("/",getMain)
 router.post("/",addCommerce)
 router.delete("/",deleteCommerce)
@@ -13,4 +13,5 @@ router.post("/addCategory",addCategory)
 router.get("/getCategory",getCategory)
 router.get("/getCategorySimple",getCategorySimple)
 router.delete("/deleteCategory",deleteCategory)
+router.get("/searchAdmin",search)
 module.exports=router
