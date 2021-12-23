@@ -79,7 +79,7 @@ exports.addPic=async(req,res,next)=>{
         return res.status(400).send("Suratda problema yuze cykdy")
     }
     let pic=req.files.pic0
-    let a=await sharp(pic.data).webp({quality:90}).resize(65,55).toBuffer()
+    let a=await sharp(pic.data).webp().toBuffer()
     if(filename!=undefined){
         fs.unlink("./public/sponsor/"+filename,(err) => {if(err){console.log(err)}})
     }
@@ -88,8 +88,9 @@ exports.addPic=async(req,res,next)=>{
     try {
         await Sponsor.update({pic:filename},{where:{"id":id}})
         return res.status(200).send({status:200})
-    } catch (err) {
-        
+    } catch (err){
+        console.log(err)
+        return res.status(400).send({status:400})
     }    
 }
 exports.isActive=async(req,res,next)=>{

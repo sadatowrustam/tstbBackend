@@ -296,6 +296,7 @@ exports.search=async(req,res,next)=>{
   let obj={
     result:[]
   }
+  let found=false
   let search
   let id=0
   let soz
@@ -307,30 +308,38 @@ exports.search=async(req,res,next)=>{
   }
   //tazelikleri gozleya
   for(let i=0; i<search.length; i++) {
+    console.log(i,search.length)
     let texts=Object.values(search[i].body)
     for (let j=0;j<3;j++){
       let dirty=texts[j]
       let cleanText = dirty.replace(/<\/?[^>]+(>|$)/g, "")
-        if(cleanText.includes(text)&& search[i].id!=id){
-            id=search[i].id
-            let index=cleanText.indexOf(text)
-            if(index<50){
-                soz=cleanText.slice(0,index+50)
-            }else{
-                soz=cleanText.slice(index-50,index+50)
-            }
-            let oneNews={
-              soz:soz,
-              id:id,
-              category:"news"
-            }
-            search.splice(i,1)
-            i-=1
-          obj.result.push(oneNews);
+        if(cleanText.includes(text)&&search[i].id!=id){ 
+          id=search[i].id
+          let index=cleanText.indexOf(text)
+          if(index<50){
+              soz=cleanText.slice(0,index+50)
+          }else{
+              soz=cleanText.slice(index-50,index+50)
+          }
+          let oneNews={
+            soz:soz,
+            id:id,
+            category:"news"
+          }
+          found=true
+        obj.result.push(oneNews);
         }
-    }
         
-}//tazelik header gozleya
+    }
+    if(found){
+      console.log("found")  
+      search.splice(i,1)
+      i-=1
+      found=false
+    }
+  }
+  console.log(search.length)
+//tazelik header gozleya
 for (let i = 0; i <search.length;i++){
   let headers=Object.values(search[i].header)
       for (let j=0;j<3;j++){
@@ -343,9 +352,17 @@ for (let i = 0; i <search.length;i++){
                 id:id,
                 category:"news"
               }
+              found=true
             obj.result.push(oneNews);
-          }
-    }
+            }
+            
+        }
+        if(found){
+          console.log("found")  
+          search.splice(i,1)
+          i-=1
+          found=false
+        }
 }
 try {
   search=await Events.findAll();
@@ -370,13 +387,22 @@ for(let i=0; i<search.length; i++) {
           let oneNews={
             soz:soz,
             id:id,
-            category:"events"
+            category:"news"
           }
+          found=true
         obj.result.push(oneNews);
-      }
-  }
+        }
+        
+    }
+    if(found){
+      console.log("found")  
+      search.splice(i,1)
+      i-=1
+      found=false
+    }
   
 }
+//events headers
 for (let i = 0; i <search.length;i++){
   let headers=Object.values(search[i].header)
       for (let j=0;j<3;j++){
@@ -387,11 +413,19 @@ for (let i = 0; i <search.length;i++){
               let oneNews={
                 soz:cleanText,
                 id:id,
-                category:"events"
+                category:"news"
               }
+              found=true
             obj.result.push(oneNews);
-          }
-    }
+            }
+            
+        }
+        if(found){
+          console.log("found")  
+          search.splice(i,1)
+          i-=1
+          found=false
+        }
 }
   return res.send(obj.result);
 }

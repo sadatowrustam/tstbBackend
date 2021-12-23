@@ -106,7 +106,7 @@ exports.editCommmerce=async(req,res,next)=>{
     }
     let welayat=req.body.welayat
     let website=req.body.web
-    let number=req.body.number
+    let number=req.body.telefon
     let email=req.body.email
     try {
         await Commerce.update({name:name,welayat:welayat,number:number,commerceId:commerceId,website:website,email:email,address:address},{where:{"id":id}})

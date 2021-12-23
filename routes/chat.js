@@ -53,13 +53,6 @@ io.on('connection',async(socket) => {
             isNewMessage=false
         }
     })
-    //gerek dal
-    // socket.on("admin-get",async()=>{
-    //     adminSocket=socket.id
-    //     let allMessages=await Chat.findAll({attributes:["chat","isRead","user"]})
-
-    //     socket.emit('admin-allmessages',{ message: allMessages})
-    // })
     socket.on("admin-send",async(message)=>{``
         let user=message.user
         let lastMessage=message.text
