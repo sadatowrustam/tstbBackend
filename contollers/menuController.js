@@ -1,5 +1,6 @@
 const {Menu,Bussiness,License}=require('../models')
 const {searchFromBussiness}=require("../utils/searchFrom")
+const ip=require("ip")
 const randomstring = require("randomstring")
 const fs=require("fs")
 const sharp=require("sharp")
@@ -64,7 +65,9 @@ exports.addOne=async(req,res,next)=>{
 exports.getMembership=async(req,res,next)=>{
   try {
     let about=await Menu.findOne({where:{id:2}})
-    return res.status(200).send(about)
+    let base=decodeBase64(about.body.tm[0])
+    console.log("returned")
+    return res.status(200).send(base)
   } catch (err) {
     console.log(err)
     return res.status(400).send("something went wrong")
@@ -76,6 +79,7 @@ exports.editMembership=async(req,res,next)=>{
       ru:req.body.text2,
       en:req.body.text3
   }
+  decodeBase64(req.body.text)
   let header={
       tm:req.body.tmheader,
       ru:req.body.ruheader,
@@ -579,4 +583,60 @@ function size(file){
     status="Mb"
   }
   return size+status
+}
+function decodeBase64(text){
+  let startIndex
+  let endIndex
+  let replaceStart  
+  if(text.includes("<img src=\"data:image")){
+    startIndex=text.indexOf("\"data:image")
+    replaceStart=startIndex
+    for(let i=startIndex; i<text.length; i++){
+      if (text[i]==","){
+        startIndex=i
+        break
+      }
+    }
+    console.log(startIndex)
+    for (let i=startIndex; i<text.length; i++){
+      if(text[i]==">"){
+        endIndex=i
+        break
+      }
+    }
+    
+  }
+  console.log(replaceStart,endIndex)
+  let b64string = text.substring(startIndex+1,endIndex-1)
+  let replace=text.substring(replaceStart,endIndex)
+  let brandNew=text.replace(replace,ip.address()+"localhost:5000/pizdes1.png")
+  let buffer=Buffer.from(b64string,"base64")
+  console.log(ip.address())
+  fs.writeFile("./public/menu/pizdes1.png",buffer,(err)=>{if(err){console.log(err)}})
+  return brandNew
+  // fs.writeFile("./public/out.png", b64string, 'base64', function(err) {
+  //   console.log(err);
+  // });
+
+  // }
+
+
+
+
+
+
+
+
+
+
+  //   console.log(b64string.length)
+  //   return b64string
+    // let buf = Buffer.from(b64string, 'base64')
+
+    // console.log(buf)
+    // fs.writeFile("./public/out.png", b64string, 'base64', function(err) {
+    //   console.log(err);
+    // });
+    // await sharp(buf).toFile("./public/test.png")
+  // 
 }

@@ -42,14 +42,9 @@ exports.getOneConstructor=async(req,res,next)=>{
     let id=req.query.id
     searchId=id
     try {
-        let constructor=await Constructorcategory.findOne({where:{"id":id},
-        include:[{
-            model:Constructor,
-            as:"constructors",
-            order:[[Constructor,"id","DESC"]]
-        },
-        ]})
-        return res.send(constructor)
+        let subcategory=await Constructor.findAll({where:{constructorId:id}})
+        let result=sort(subcategory)
+        return res.send(result)
     } catch (err) {
         console.log(err)
         return res.status(500).send("something went wrong")
@@ -123,14 +118,14 @@ exports.getOneSubcategory=async(req,res,next)=>{
     let id=req.query.id
     try {
         let category = await Constructor.findOne({where:{id:id},include:"banner"})
-        // if(category.pic!=null){
-        //     category.pic.forEach((e,i)=>{
-        //     if(e==" "){category.pic.splice(i,1);boshmy=true}
-        // })
-        // if(boshmy){await Constructor.update({pic:category.pic},{where:{id:id}})
-        // category = await Constructor.findOne({where:{id:id}})
-    // }
-// }
+        if(category.pic!=null){
+            category.pic.forEach((e,i)=>{
+            if(e==" "){category.pic.splice(i,1);boshmy=true}
+        })
+        if(boshmy){await Constructor.update({pic:category.pic},{where:{id:id}})
+        category = await Constructor.findOne({where:{id:id}})
+    }
+}
     return res.send(category)
 }  
     catch (err) {
@@ -421,4 +416,28 @@ function size(file){
     }
     return size+status
 }
-
+function sort(array){
+    let obj={}
+    sortedArray=[]
+    let max=0
+    let one
+    let uzynlyk=array.length
+    let status=true
+    let index
+    while(uzynlyk>0){
+        console.log(uzynlyk)
+        for(let i=0; i<array.length; i++){
+            if(array[i].id>max){
+                max=array[i].id
+                one=array[i]
+                index=i
+            }
+        }
+        array.splice(index,1)
+        uzynlyk=array.length
+        max=0
+        sortedArray.push(one)
+    }
+    obj.constructors=sortedArray
+    return obj
+}

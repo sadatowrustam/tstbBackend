@@ -4,7 +4,7 @@ const fileupload=require("express-fileupload")
 const{Menu}=require("./models")
 const schedule = require('node-schedule');
 const app=express()
-app.use(express.json())
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({extended:true}))
 app.use(fileupload())
 const cors=require("cors")
