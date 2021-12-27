@@ -1,9 +1,9 @@
 const {Op}=require("sequelize")
 const sharp = require("sharp");
 const {searchFromNews}=require("../utils/searchFrom")
-const sanitizeHtml=require("sanitize-html")
 const fs=require("fs");
 const randomstring=require("randomstring");
+const {decodeBase64}=require("../utils/decodeBase64")
 const {News,News_tags,Banners,Events}=require("../models/");
 exports.getAll =async (req, res, next) => {
   try{
@@ -29,10 +29,12 @@ exports.addTags=async(req,res,next)=>{
   }
 }
 exports.addNews=async (req,res,next)=>{
+  let path="news/"
+  console.log(req.body.name)
   let body={
-    TM:req.body.text,
-    RU:req.body.text2, 
-    EN:req.body.text3
+    TM:await decodeBase64(req.body.text,path),
+    RU:await decodeBase64(req.body.text2,path), 
+    EN:await decodeBase64(req.body.text3,path)
   }
   let tags=req.body.tag
   let header={
@@ -82,10 +84,11 @@ exports.addPicture=async (req,res,next)=>{
   }
 }
 exports.editNews=async(req,res,next)=>{
+  let path="news/"
   let body={
-    TM:req.body.text,
-    RU:req.body.text2, 
-    EN:req.body.text3
+    TM:await decodeBase64(req.body.text,path),
+    RU:await decodeBase64(req.body.text2,path), 
+    EN:await decodeBase64(req.body.text3,path)
   }
   let tags=req.body.tag
   let header={
@@ -99,6 +102,7 @@ exports.editNews=async(req,res,next)=>{
   let name=req.body.name
   let topar=req.body.topar
   let date=req.body.date
+  console.log(104,name)
   try{
     await News.update({pic:filename,header:header,date:date,body:body,tags:tags,active:status,name:name,topar:topar},{where:{id:id}})
     return res.status(200).send({newsId:id})

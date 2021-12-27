@@ -2,8 +2,10 @@ const {Op}=require("sequelize")
 const sharp = require("sharp");
 const {Events,Banners,News_tags}=require("../models/");
 const{searchFromNews}=require("../utils/searchFrom")
+const {decodeBase64}=require("../utils/decodeBase64")
 const fs = require("fs")
 const randomstring = require("randomstring")
+
 exports.getAll=async(req,res,next)=>{
   try {
     let event=await Events.findAll({order:[["id","DESC"]]})
@@ -14,12 +16,13 @@ exports.getAll=async(req,res,next)=>{
   }
 }
 exports.addEvent=async (req,res,next)=>{
-
+  let path="events/"
+  let name=req.body.name
   let body={
-    TM:req.body.text,
-    RU:req.body.text2,
-    EN:req.body.text3
-}
+    TM:await decodeBase64(req.body.text,path),
+    RU:await decodeBase64(req.body.text2,path), 
+    EN:await decodeBase64(req.body.text3,path)
+  }
   let tags=req.body.tag
   let header={
     TM:req.body.tmheader,
@@ -30,7 +33,6 @@ exports.addEvent=async (req,res,next)=>{
   let topar=req.body.topar
   let active=req.body.active
   let status=req.body.status
-  let name=req.body.name
   try{
     let event=await Events.create({header:header,date:date,body:body,tags:tags,active:active,status:status,name:name,topar:topar})
     return res.send({newsId:event.id})
@@ -40,11 +42,12 @@ exports.addEvent=async (req,res,next)=>{
   }
 }
 exports.editEvent=async(req,res,next)=>{
+  let path="events/"
   let body={
-    TM:req.body.text,
-    RU:req.body.text2,
-    EN:req.body.text3
-}
+    TM:await decodeBase64(req.body.text,path),
+    RU:await decodeBase64(req.body.text2,path), 
+    EN:await decodeBase64(req.body.text3,path)
+  }
   let tags=req.body.tag
   let header={
     TM:req.body.headerTM,

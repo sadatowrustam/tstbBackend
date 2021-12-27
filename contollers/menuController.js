@@ -1,5 +1,6 @@
 const {Menu,Bussiness,License}=require('../models')
 const {searchFromBussiness}=require("../utils/searchFrom")
+const {decodeBase64,decodeBase64Array}=require("../utils/decodeBase64")
 const ip=require("ip")
 const randomstring = require("randomstring")
 const fs=require("fs")
@@ -65,9 +66,7 @@ exports.addOne=async(req,res,next)=>{
 exports.getMembership=async(req,res,next)=>{
   try {
     let about=await Menu.findOne({where:{id:2}})
-    let base=decodeBase64(about.body.tm[0])
-    console.log("returned")
-    return res.status(200).send(base)
+    return res.status(200).send(about)
   } catch (err) {
     console.log(err)
     return res.status(400).send("something went wrong")
@@ -75,9 +74,9 @@ exports.getMembership=async(req,res,next)=>{
 }
 exports.editMembership=async(req,res,next)=>{
   let body={
-      tm:req.body.text,
-      ru:req.body.text2,
-      en:req.body.text3
+      tm:await decodeBase64(req.body.text),
+      ru:await decodeBase64(req.body.text2),
+      en:await decodeBase64(req.body.text3)
   }
   decodeBase64(req.body.text)
   let header={
@@ -228,9 +227,9 @@ exports.editAboutUs=async(req,res,next)=>{
     en:req.body.enheader
 }
 let body={
-    tm:req.body.text,
-    ru:req.body.text2,
-    en:req.body.text3
+    tm:await decodeBase64Array(req.body.text[0]),
+    ru:await decodeBase64Array(req.body.text2[0]),
+    en:await decodeBase64Array(req.body.text3[0])
 }
 let bosh=req.body.bosh
 if(bosh[0]!=undefined){
@@ -240,7 +239,6 @@ if(bosh[0]!=undefined){
     allfiles.splice((bosh[i]-i),1," ")
   }
 }
-console.log(allfiles)
 try {
     await Menu.update({body:body,header:header,pic:allfiles},{where:{"id":3}})
     return res.send({id:3})
@@ -329,10 +327,11 @@ exports.addBussiness=async(req,res,next)=>{
     ru:req.body.ruheader,
     en:req.body.enheader
   }
+  let path="bussiness/"
   let body={
-    tm:req.body.text,
-    ru:req.body.text2,
-    en:req.body.text3
+    tm:await decodeBase64(req.body.text,path),
+    ru:await decodeBase64(req.body.text2,path),
+    en:await decodeBase64(req.body.text3,path)
   }
   try {
     let bussiness=await Bussiness.create({header:header, body:body})
@@ -350,10 +349,11 @@ exports.editBussiness=async(req,res,next)=>{
     ru:req.body.ruheader,
     en:req.body.enheader
   }
+  let path="bussiness/"
   let body={
-    tm:req.body.text,
-    ru:req.body.text2,
-    en:req.body.text3
+    tm:await decodeBase64(req.body.text,path),
+    ru:await decodeBase64(req.body.text2,path),
+    en:await decodeBase64(req.body.text3,path)
   }
   try {
     await Bussiness.update({header:header, body:body},{where: {id:id}})
@@ -466,10 +466,11 @@ exports.addLicense=async(req,res,next)=>{
     ru:req.body.ruheader,
     en:req.body.enheader
   }
+  let path="licenses/"
   let body={
-    tm:req.body.text,
-    ru:req.body.text2,
-    en:req.body.text3
+    tm:await decodeBase64(req.body.text,path),
+    ru:await decodeBase64(req.body.text2,path),
+    en:await decodeBase64(req.body.text3,path)
   }
   try {
     let license=await License.create({header:header, body:body})
@@ -487,10 +488,11 @@ exports.editLicense=async(req,res,next)=>{
     ru:req.body.ruheader,
     en:req.body.enheader
   }
+  let path="license/"
   let body={
-    tm:req.body.text,
-    ru:req.body.text2,
-    en:req.body.text3
+    tm:await decodeBase64(req.body.text,path),
+    ru:await decodeBase64(req.body.text2,path),
+    en:await decodeBase64(req.body.text3,path)
   }
   try {
     await License.update({header:header, body:body},{where: {id:id}})
@@ -584,59 +586,5 @@ function size(file){
   }
   return size+status
 }
-function decodeBase64(text){
-  let startIndex
-  let endIndex
-  let replaceStart  
-  if(text.includes("<img src=\"data:image")){
-    startIndex=text.indexOf("\"data:image")
-    replaceStart=startIndex
-    for(let i=startIndex; i<text.length; i++){
-      if (text[i]==","){
-        startIndex=i
-        break
-      }
-    }
-    console.log(startIndex)
-    for (let i=startIndex; i<text.length; i++){
-      if(text[i]==">"){
-        endIndex=i
-        break
-      }
-    }
-    
-  }
-  console.log(replaceStart,endIndex)
-  let b64string = text.substring(startIndex+1,endIndex-1)
-  let replace=text.substring(replaceStart,endIndex)
-  let brandNew=text.replace(replace,ip.address()+"localhost:5000/pizdes1.png")
-  let buffer=Buffer.from(b64string,"base64")
-  console.log(ip.address())
-  fs.writeFile("./public/menu/pizdes1.png",buffer,(err)=>{if(err){console.log(err)}})
-  return brandNew
-  // fs.writeFile("./public/out.png", b64string, 'base64', function(err) {
-  //   console.log(err);
-  // });
 
-  // }
-
-
-
-
-
-
-
-
-
-
-  //   console.log(b64string.length)
-  //   return b64string
-    // let buf = Buffer.from(b64string, 'base64')
-
-    // console.log(buf)
-    // fs.writeFile("./public/out.png", b64string, 'base64', function(err) {
-    //   console.log(err);
-    // });
-    // await sharp(buf).toFile("./public/test.png")
-  // 
-}
+  

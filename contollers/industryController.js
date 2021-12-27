@@ -1,5 +1,6 @@
 const{Industry}=require("../models")
 const {Op}=require("sequelize")
+const {decodeBase64}=require("../utils/decodeBase64")
 const sharp=require("sharp")
 const fs=require("fs")
 const randomstring = require("randomstring")
@@ -99,10 +100,11 @@ exports.addSubcategory=async(req,res,next)=>{
         ru:req.body.ru,
         en:req.body.en
     }
+    let path="industry/"
     let text={
-        tm:req.body.text,
-        ru:req.body.text2,
-        en:req.body.text3
+        tm:await decodeBase64(req.body.text,path),
+        ru:await decodeBase64(req.body.text2,path),
+        en:await decodeBase64(req.body.text3,path)
     }
     let title={
         tm:req.body.tmheader,
@@ -151,10 +153,11 @@ exports.editSubcategory=async(req,res,next)=>{
         ru:req.body.ru,
         en:req.body.en
     }
+    let path="industry/"
     let text={
-        tm:req.body.text,
-        ru:req.body.text2,
-        en:req.body.text3
+        tm:await decodeBase64(req.body.text,path),
+        ru:await decodeBase64(req.body.text2,path),
+        en:await decodeBase64(req.body.text3,path)
     }
     let title={
         tm:req.body.tmheader,

@@ -2,6 +2,7 @@ const {Constructor,Constructorcategory}=require("../models")
 const {sequelize}=require("sequelize");
 const {searchFromConstructor}=require("../utils/searchFrom")
 const randomstring = require("randomstring")
+const{decodeBase64Array,decodeBase64Constructor}=require("../utils/decodeBase64")
 const fs=require("fs")
 const sharp= require("sharp")
 const rimraf=require("rimraf")
@@ -85,16 +86,18 @@ exports.deleteConstructor=async(req,res,next)=>{
         return res.status(400).send("something went wrong")
     }
 }
-exports.addSubcategory=async(req,res,next)=>{
+exports.
+addSubcategory=async(req,res,next)=>{
     let name={
         TM:req.body.tm,
         RU:req.body.ru,
         EN:req.body.en
     }
+    let path="constructor/"
     let body={
-        TM:req.body.text,
-        RU:req.body.text2,
-        EN:req.body.text3
+        TM:await decodeBase64Constructor(req.body.text,path),
+        RU:await decodeBase64Constructor(req.body.text2,path),
+        EN:await decodeBase64Constructor(req.body.text3,path)
     }
     let header={
         TM:req.body.tmheader,
@@ -151,10 +154,11 @@ exports.editSubcategory=async(req,res,next) => {
         RU:req.body.ru,
         EN:req.body.en
     }
+    let path="constructor/"
     let body={
-        TM:req.body.text,
-        RU:req.body.text2,
-        EN:req.body.text3
+        TM:await decodeBase64Constructor(req.body.text,path),
+        RU:await decodeBase64Constructor(req.body.text2,path),
+        EN:await decodeBase64Constructor(req.body.text3,path)
     }
     let header={
         TM:req.body.tmheader,
