@@ -51,7 +51,7 @@ app.use("/mail",require("./routes/mail"))//dyndyk
 app.use("/chat",require("./routes/chat"))
 app.use("/menu",require("./routes/menu"))//dyndyk
 app.use("/login",require("./routes/login"))
-app.listen("5000",async function(){
+app.listen("5001",async function(){
     await sequelize.authenticate()
     console.log("app is listening on 5000")
 
