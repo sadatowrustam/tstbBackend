@@ -2,7 +2,7 @@ const express=require("express");
 const router=express.Router()
 const {Chat}=require("../models")
 const {Op}=require("sequelize")
-const io=require("socket.io")("3000",{cors:{origin:"*"}})
+const io=require("socket.io")("7000",{cors:{origin:"*"}})
 let users = {}
 let adminOnline = false
 let adminSocket
