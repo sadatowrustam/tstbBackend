@@ -391,7 +391,7 @@ for(let i=0; i<search.length; i++) {
           let oneNews={
             soz:soz,
             id:id,
-            category:"news"
+            category:"events"
           }
           found=true
         obj.result.push(oneNews);
@@ -417,7 +417,7 @@ for (let i = 0; i <search.length;i++){
               let oneNews={
                 soz:cleanText,
                 id:id,
-                category:"news"
+                category:"events"
               }
               found=true
             obj.result.push(oneNews);
