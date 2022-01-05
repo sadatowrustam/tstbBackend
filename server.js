@@ -36,7 +36,7 @@ app.use(cors({
       });
 app.use(express.static("./public"))
 app.use(require("morgan")("dev"))
-app.use("/",require("./routes/main"))
+app.use("/api",require("./routes/main"))
 app.use("/news",require("./routes/news"))//dyndyk
 app.use("/newspapers",require("./routes/newspaper"))//dyndyk
 app.use("/banners",require("./routes/banner"))//dyndyk
