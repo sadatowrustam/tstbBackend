@@ -31,7 +31,7 @@ exports.decodeBase64=async(text,path)=>{
         let b64string = text.substring(startIndex+1,endIndex-1)
         let replace=text.substring(replaceStart,endIndex)
         let filename=randomstring.generate(7)+".webp"
-        let newVar="http://"+ip.address()+":5000/"+path+filename
+        let newVar="https://95.85.118.228:5003/"+path+filename
         console.log(newVar)
         brandNew=text.replace(replace,newVar)
         let buffer=Buffer.from(b64string,"base64")
@@ -74,7 +74,7 @@ exports.decodeBase64=async(text,path)=>{
       let b64string = text.substring(startIndex+1,endIndex-1)
       let replace=text.substring(replaceStart,endIndex)
       let filename=randomstring.generate(7)+".webp"
-      let newVar="http://"+ip.address()+":5000/"+path+filename
+      let newVar="https://95.85.118.228:5003/"+path+filename
       console.log(newVar)
       brandNew=text.replace(replace,newVar)
       let buffer=Buffer.from(b64string,"base64")
@@ -119,7 +119,7 @@ exports.decodeBase64Constructor=async(text,path)=>{
         let b64string = e.substring(startIndex+1,endIndex-1)
         let replace=e.substring(replaceStart,endIndex)
         let filename=randomstring.generate(7)+".webp"
-        let newVar="http://"+ip.address()+":5000/"+path+filename
+        let newVar="https://95.85.118.228:5003/"+path+filename
         console.log(newVar)
         brandNew=e.replace(replace,newVar)
         let buffer=Buffer.from(b64string,"base64")
