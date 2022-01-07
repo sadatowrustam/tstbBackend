@@ -1,7 +1,7 @@
 const express=require("express")
 const router=express.Router()
 const{allConstructors,addConstructor,addSubcategory,getOneSubcategory,editSubcategory,deleteConstructor,getOneConstructor,addPic,getOneConstructorSimple,
-editConstructor,deleteSubcategory,addVideo, allConstructorsPro,addTestPic,addFile,deleteFile,search}=require("../contollers/constructorController")
+editConstructor,deleteSubcategory,addVideo, allConstructorsPro,addTestPic,addFile,deleteFile,search,download}=require("../contollers/constructorController")
 router.get("/",allConstructors)
 router.get("/all",allConstructorsPro)
 router.get("/getOne",getOneConstructor)
@@ -18,4 +18,5 @@ router.post("/addVideo",addVideo)
 router.post("/addPic",addPic)
 router.post("/addFile",addFile)
 router.get("/searchAdmin",search)
+router.get("/download",download)
 module.exports=router
