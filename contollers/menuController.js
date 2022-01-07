@@ -246,6 +246,12 @@ try {
     console.log(err)
     return res.status(400).send({message: err.message})   
 }
+}
+exports.download=async(req,res,next)=>{
+  let {file,id}=req.query
+  let path="./public/menu"
+
+  res.sendFile(file,{root:path});
 }           
 exports.addPic=async(req,res,next)=>{
   let id=req.query.id
@@ -388,14 +394,13 @@ exports.addBussinessFile=async(req,res,next)=>{
   let pic=Object.values(req.files)
   for(let i=0;i<pic.length;i++){
         filename=pic[i].name
-        await pic[i].mv("./public/menu/"+filename,(err)=>{if(err){console.log(err)}})
+        await pic[i].mv("./public/bussiness/"+id+"/"+filename,(err)=>{if(err){console.log(err)}})
         let obj={
             filename:filename,
             size:size(pic[i].size)
         }
         allfiles.push(obj)
     }
-  console.log(allfiles)
   try {
     await Bussiness.update({files:allfiles},{where:{id:id}})
     return res.status(200).json({status:"success"})
@@ -431,6 +436,12 @@ exports.searchBussiness=async(req,res)=>{
   }
   let result =searchFromBussiness(search,text)
   return res.send(result)
+}
+exports.downloadBussiness=async(req,res,next)=>{
+  let {file,id}=req.query
+  let path="./public/bussiness/"+id
+  res.sendFile(file,{root:path});
+
 }
 exports.getAllLicense=async(req,res,next)=>{
   try {
@@ -527,7 +538,7 @@ exports.addLicenseFile=async(req,res,next)=>{
   let pic=Object.values(req.files)
   for(let i=0;i<pic.length;i++){
         filename=pic[i].name
-        await pic[i].mv("./public/menu/"+filename,(err)=>{if(err){console.log(err)}})
+        await pic[i].mv("./public/license/"+id+"/"+filename,(err)=>{if(err){console.log(err)}})
         let obj={
             filename:filename,
             size:size(pic[i].size)
@@ -573,6 +584,12 @@ exports.searchLicense=async(req,res,next)=>{
   }
   let result =searchFromBussiness(search,text)
   return res.send(result)
+}
+exports.downloadLicense=async(req,res,next)=>{
+  let {file,id}=req.query
+  let path="./public/license/"+id
+  res.sendFile(file,{root:path});
+
 }
 function size(file){
   let size = 0
