@@ -1,6 +1,6 @@
 const express=require("express")
 const router=express.Router()
-const {mainMembers,addMember,getOne,editMember,deleteMember,allMembers,addPic,addFile,deleteFile,getBycategory,search}=require("../contollers/memberController")
+const {mainMembers,addMember,getOne,editMember,deleteMember,allMembers,addPic,addFile,deleteFile,getBycategory,search,download}=require("../contollers/memberController")
 router.get("/",allMembers)
 router.get("/main",mainMembers)
 router.get("/category",getBycategory)
@@ -12,4 +12,5 @@ router.post("/edit",editMember)
 router.delete("/",deleteMember)
 router.delete("/deleteFile",deleteFile)
 router.get("/searchAdmin",search)
+router.get("/download",download)
 module.exports=router
