@@ -86,8 +86,13 @@ exports.deleteConstructor=async(req,res,next)=>{
         return res.status(400).send("something went wrong")
     }
 }
-exports.
-addSubcategory=async(req,res,next)=>{
+exports.download=async(req,res,next)=>{
+    let {file,id}=req.query
+    let path="./public/constructor/"+id
+    res.sendFile(file,{root:path});
+}
+
+exports.addSubcategory=async(req,res,next)=>{
     let name={
         TM:req.body.tm,
         RU:req.body.ru,
