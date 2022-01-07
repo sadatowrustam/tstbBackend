@@ -15,3 +15,4 @@ router.get("/getCategorySimple",getCategorySimple)
 router.delete("/deleteCategory",deleteCategory)
 router.get("/searchAdmin",search)
 module.exports=router
+
