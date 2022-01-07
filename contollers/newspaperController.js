@@ -142,13 +142,8 @@ exports.isActiveNewspaper=async(req,res,next)=>{
     }
 }
 exports.downloadFile=async(req,res,next)=>{
-        let filename=req.query.file
-        res.download("./public/newspapers/files/" +req.query.file,
-          (err) => {
-            if (err) res.status(404).send("<h1>Not found: 404</h1>");
-          }
-        );
-
+    let filename=req.query.file
+    res.sendFile(filename,{root:"./public/newspapers/files"});
 }
 exports.search=async(req,res)=>{
     let search 
