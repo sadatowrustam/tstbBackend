@@ -213,6 +213,11 @@ exports.search=async(req,res,next)=>{
     console.log(result)
     return res.send(result)
 }
+exports.download=async(req,res,next)=>{
+    let {file,id}=req.query
+    let path="./public/members/"+id+"/docs"
+    res.sendFile(file,{root:path});
+}
 function size(file){
 
     let size = 0
