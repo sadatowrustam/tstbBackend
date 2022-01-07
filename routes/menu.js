@@ -5,7 +5,7 @@ addPic,editMembership,editAboutUs,editConsultation,
 getAllBussiness,getAllLicense,getOneBussiness,getOneLicense,
 addBussiness,editBussiness,addBussinessFile,deleteBussinessFile,deleteBussiness,addMembershipFile,
 deleteMembershipFile,addLicense,editLicense,deleteLicense,addLicenseFile,deleteLicenseFile,getLicenseHeader,
-addStatistika,getStatistika,editStatistika,addOne,searchBussiness,searchLicense
+addStatistika,getStatistika,editStatistika,addOne,searchBussiness,searchLicense,download,downloadBussiness,downloadLicense
 }=require("../contollers/menuController")
 router.get("/addSettings", addSettings)
 router.get("/getMembership",getMembership)
@@ -26,16 +26,19 @@ router.get("/getAllLicense",getAllLicense)
 router.get("/getLicenseHeader",getLicenseHeader)
 router.get("/getOneBussiness",getOneBussiness)
 router.get("/bussiness/searchAdmin",searchBussiness)
+router.get("/bussiness/download",downloadBussiness)
 router.get("/getOneLicense",getOneLicense)
 router.post("/addBussiness",addBussiness)
 router.post("/editBussiness",editBussiness)
 router.delete("/deleteBussiness",deleteBussiness)
 router.post("/addBussinessFile",addBussinessFile)
 router.delete("/deleteBussinessFile",deleteBussinessFile)
+router.get("/license/download",downloadLicense)
 router.post("/addLicense",addLicense)
 router.post("/editLicense",editLicense)
 router.post("/addLicenseFile",addLicenseFile)
 router.delete("/deleteLicense",deleteLicense)
 router.delete("/deleteLicenseFile",deleteLicenseFile)
 router.get("/license/searchAdmin",searchLicense)
+router.get("/download",download)
 module.exports =router
