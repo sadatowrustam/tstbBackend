@@ -24,11 +24,11 @@ exports.addEvent=async (req,res,next)=>{
     EN:await decodeBase64(req.body.text3,path)
   }
   let tags=req.body.tag
-  let header={
-    TM:req.body.tmheader,
-    RU:req.body.ruheader,
-    EN:req.body.enheader
-  }
+let header={
+    TM:req.body.headerTM,
+    RU:req.body.headerRU,
+    EN:req.body.headerEN
+}
   let date=req.body.date
   let topar=req.body.topar
   let active=req.body.active
