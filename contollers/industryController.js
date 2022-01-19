@@ -218,7 +218,7 @@ exports.addPic=async(req,res,next)=>{
     try {
         let file=req.files.pic0
         let filename=randomstring.generate(7)+".webp"
-        let buffer=await sharp(file.data).webp({quality:90}).resize(680,400).toBuffer()
+        let buffer=await sharp(file.data).resize(680,400).toBuffer()
         await sharp(buffer).toFile("./public/industry/"+filename)
         if(files[index].pic!=null){
             fs.unlink("./public/industry/"+files[index].pic,(err) => {if(err){console.log(err)}})
