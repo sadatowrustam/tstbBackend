@@ -94,7 +94,7 @@ exports.addPic=async(req,res,next)=>{
         return res.status(400).send("something went wrong")
     }
     let pic=req.files.pic0
-    let filename=randomstring.generate(7)+"."+".jpg"
+    let filename=randomstring.generate(7)+".jpg"
     let buffer=await sharp(pic.data).resize(350,500).toBuffer()
     await sharp(buffer).toFile("./public/newspapers/pic/"+filename)
     try {
