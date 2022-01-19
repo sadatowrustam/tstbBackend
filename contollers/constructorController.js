@@ -383,8 +383,8 @@ exports.addTestPic=async(req,res,next)=>{
             let oneCollection=Object.values(picArray[i])
             let miniArray=[]
             for (let j=0;j<oneCollection.length;j++){
-                let buffer=await sharp(oneCollection[j].data).webp().resize(1100,234).toBuffer()
-                let filename=oneCollection[j].name.split(".")[0]+".webp"
+                let buffer=await sharp(oneCollection[j].data).resize(1100,234).toBuffer()
+                let filename=oneCollection[j].name.split(".")[0]+".jpg"
                 await sharp(buffer).toFile(`./public/constructor/${id}/${filename}`)
                 miniArray.push(filename)
             }
