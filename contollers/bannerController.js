@@ -39,9 +39,9 @@ exports.uploadPic=async(req,res,next)=>{
         filename=randomstring.generate(7)+".gif"
         file.mv("./public/banners/"+filename,(err)=>{if(err){console.log(err)}})
     }else{
-        filename=randomstring.generate(7)+".webp"
-        let buffer=await sharp(file.data).webp({quality:90}).resize(1100,234).toBuffer()
-        await sharp(buffer).resize(1100,234).toFile("./public/banners/"+filename)
+        filename=randomstring.generate(7)+".jpg"
+        let buffer=await sharp(file.data).resize(1100,234).toBuffer()
+        await sharp(buffer).toFile("./public/banners/"+filename)
     }
     allBanners[index].pic=filename
     try {
