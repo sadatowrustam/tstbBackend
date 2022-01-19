@@ -79,11 +79,11 @@ exports.addPic=async(req,res,next)=>{
         return res.status(400).send("Suratda problema yuze cykdy")
     }
     let pic=req.files.pic0
-    let a=await sharp(pic.data).webp().toBuffer()
+    let a=await sharp(pic.data).toBuffer()
     if(filename!=undefined){
         fs.unlink("./public/sponsor/"+filename,(err) => {if(err){console.log(err)}})
     }
-    filename=pic.name.split(".")[0]+".webp"
+    filename=pic.name.split(".")[0]+".jpg"
     await sharp(a).toFile("./public/sponsor/"+filename)
     try {
         await Sponsor.update({pic:filename},{where:{"id":id}})
