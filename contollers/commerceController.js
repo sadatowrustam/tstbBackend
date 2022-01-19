@@ -65,7 +65,7 @@ try {
 }
     let pic=Object.values(req.files)
     for(let i=0; i<pic.length; i++) {
-        let a=await sharp(pic[i].data).webp({quality:90}).resize(571,278).toBuffer()
+        let a=await sharp(pic[i].data).resize(571,278).toBuffer()
         let filename=randomstring.generate(7)+".webp"
         await sharp(a).toFile("./public/commerce/"+id+"/"+filename)
         surat.push(filename)
