@@ -30,7 +30,7 @@ exports.decodeBase64=async(text,path)=>{
       if(replaceStart!=undefined){
         let b64string = text.substring(startIndex+1,endIndex-1)
         let replace=text.substring(replaceStart,endIndex)
-        let filename=randomstring.generate(7)+".webp"
+        let filename=randomstring.generate(7)+".jpg"
         let newVar="https://tstb.gov.tm:5003/"+path+filename
         console.log(newVar)
         brandNew=text.replace(replace,newVar)
@@ -73,7 +73,7 @@ exports.decodeBase64=async(text,path)=>{
     if(replaceStart!=undefined){
       let b64string = text.substring(startIndex+1,endIndex-1)
       let replace=text.substring(replaceStart,endIndex)
-      let filename=randomstring.generate(7)+".webp"
+      let filename=randomstring.generate(7)+".jpg"
       let newVar="https://tstb.gov.tm:5003/"+path+filename
       console.log(newVar)
       brandNew=text.replace(replace,newVar)
@@ -118,7 +118,7 @@ exports.decodeBase64Constructor=async(text,path)=>{
       if(replaceStart!=undefined){
         let b64string = e.substring(startIndex+1,endIndex-1)
         let replace=e.substring(replaceStart,endIndex)
-        let filename=randomstring.generate(7)+".webp"
+        let filename=randomstring.generate(7)+".jpg"
         let newVar="https://tstb.gov.tm:5003/"+path+filename
         console.log(newVar)
         brandNew=e.replace(replace,newVar)
