@@ -133,8 +133,8 @@ exports.addPic=async(req,res,next)=>{
   let picture=await Member.findOne({where:{id}})
   filename1=picture.pic
     let pic=req.files.pic0
-    filename=pic.name.split(".")[0]+".webp"
-    let buffer=await sharp(pic.data).webp().resize(64,64).toBuffer()
+    filename=pic.name.split(".")[0]+".jpg"
+    let buffer=await sharp(pic.data).resize(64,64).toBuffer()
     if(filename1!=undefined){
       fs.unlink("./public/members/"+id+"/"+filename1,(err)=>{if(err){console.log(err)}})
     }
