@@ -228,8 +228,8 @@ exports.addPic=async(req,res,next)=>{
     let pic=Object.values(req.files)
     let pic1=req.files
     for(let i=0; i<pic.length; i++) {
-    let a=await sharp(pic[i].data).webp({quality:90}).resize(1024,728).toBuffer()
-    let filename=randomstring.generate(7)+".webp"
+    let a=await sharp(pic[i].data).resize(1024,728).toBuffer()
+    let filename=randomstring.generate(7)+".jpg"
     await sharp(a).toFile("./public/constructor/"+id+"/"+filename)
     newfiles.push(filename)
     }   
